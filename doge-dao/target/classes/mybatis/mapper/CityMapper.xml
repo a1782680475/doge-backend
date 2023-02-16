@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doge.dao.mapper.CityMapper">
+    <sql id="columns">
+        id,
+		city_code as cityCode,
+        province_code as provinceCode,
+        city_name as cityName,
+        create_time as createTime,
+        update_time as updateTime
+    </sql>
+    <!--行政区域省份获取-->
+    <select id="getCityList" parameterType="int"  resultType="CityDO">
+        SELECT
+        <include refid="columns"/>
+        FROM city
+        WHERE province_code = ${privinceCode}
+        ORDER BY city_code
+    </select>
+</mapper>

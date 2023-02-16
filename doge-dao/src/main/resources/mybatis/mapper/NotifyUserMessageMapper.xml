@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doge.dao.mapper.NotifyUserMessageMapper">
+    <sql id="columns">
+        t1.id,
+        t1.user_id as userId,
+        t1.content,
+        t1.sender as senderId,
+        t2.avatar as senderAvatar,
+        t2.nickname as senderName,
+        t1.is_read as `read`,
+        t1.read_time as readTime,
+        t1.create_time as sendTime
+    </sql>
+
+    <!--根据对象分页查询-->
+    <select id="selectListByPage" resultType="NotifyMessageBO">
+        SELECT
+        <include refid="columns"/>
+        FROM notify_user_message t1
+        LEFT JOIN sys_user t2 ON t1.sender = t2.id
+        WHERE t1.user_id=#{userId}
+        ORDER BY t1.create_time desc
+    </select>
+
+    <!--指定数目用户未读私信列表查询-->
+    <select id="selectUnreadListByCount" resultType="NotifyMessageBO">
+        SELECT
+        <include refid="columns"/>
+        FROM notify_user_message t1
+        LEFT JOIN sys_user t2 ON t1.sender = t2.id
+        WHERE t1.user_id=#{userId}
+        AND is_read!=true
+        ORDER BY t1.create_time desc
+        LIMIT 0,#{count}
+    </select>
+
+    <!--用户用户未读私信数查询-->
+    <select id="getUnreadCount" resultType="Integer">
+        SELECT COUNT(1)
+        FROM notify_user_message WHERE user_id=${userId} AND is_read=false;
+    </select>
+
+    <!--将未读私信标记为已读-->
+    <update id="read">
+        UPDATE notify_user_message SET is_read=1,read_time=now() WHERE id=${id} AND user_id=${userId};
+    </update>
+
+    <!--将所有未读私信标记为已读-->
+    <update id="clearUnread">
+        UPDATE notify_user_message SET is_read=1,read_time=now() WHERE user_id=${userId} AND is_read!=1;
+    </update>
+</mapper>

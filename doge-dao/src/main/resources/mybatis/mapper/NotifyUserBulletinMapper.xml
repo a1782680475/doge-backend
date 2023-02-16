@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doge.dao.mapper.NotifyUserBulletinMapper">
+    <sql id="columns">
+        t1.id,
+        t2.user_id as userId,
+        t1.sender,
+        t1.title,
+        t1.content,
+        t2.is_read as `read`,
+        t2.read_time as readTime,
+        t1.create_time as sendTime
+    </sql>
+
+    <!--根据id和userId查询某公告-->
+    <select id="selectByIdAndUserId"  resultType="NotifyUserBulletinDO">
+        SELECT id,user_id as userId,bulletin_id as bulletinId,is_read as `read`,read_time as readTime,create_time as createTime,update_time as updateTime FROM notify_user_bulletin WHERE ID = #{id} and user_id=#{userId};
+    </select>
+    <!--根据对象分页查询-->
+    <select id="selectListByPage" resultType="NotifyBulletinBO">
+        SELECT
+        <include refid="columns"/>
+        FROM notify_bulletin t1
+        LEFT JOIN notify_user_bulletin t2 ON t1.id = t2.bulletin_id AND t2.user_id=#{userId}
+        LEFT JOIN sys_user t3 ON t3.id = #{userId}
+        WHERE t1.create_time &gt; t3.create_time
+        ORDER BY t1.create_time desc
+    </select>
+
+    <!--指定用户未读公告列表查询-->
+    <select id="selectUnreadList" resultType="NotifyBulletinBO">
+        SELECT
+        <include refid="columns"/>
+        FROM notify_bulletin t1
+        LEFT JOIN notify_user_bulletin t2 ON t1.id = t2.bulletin_id AND t2.user_id=#{userId}
+        LEFT JOIN sys_user t3 ON t3.id = #{userId}
+        WHERE t1.create_time &gt; t3.create_time
+        AND (is_read IS NULL OR is_read!=true)
+        ORDER BY t1.create_time desc;
+    </select>
+
+    <!--指定数目用户未读公告列表查询-->
+    <select id="selectUnreadListByCount" resultType="NotifyBulletinBO">
+        SELECT
+        <include refid="columns"/>
+        FROM notify_bulletin t1
+        LEFT JOIN notify_user_bulletin t2 ON t1.id = t2.bulletin_id AND t2.user_id=#{userId}
+        LEFT JOIN sys_user t3 ON t3.id = #{userId}
+        WHERE t1.create_time &gt; t3.create_time
+        AND (is_read IS NULL OR is_read!=true)
+        ORDER BY t1.create_time desc
+        LIMIT 0,#{count};
+    </select>
+
+    <!--用户用户未读公告数查询-->
+    <select id="getUnreadCount" resultType="Integer">
+        SELECT COUNT(1)
+        FROM notify_bulletin t1
+        LEFT JOIN notify_user_bulletin t2 ON t1.id = t2.bulletin_id AND t2.user_id=#{userId}
+        LEFT JOIN sys_user t3 ON t3.id = #{userId}
+        WHERE t1.create_time &gt; t3.create_time AND t2.is_read IS NULL;
+    </select>
+
+</mapper>

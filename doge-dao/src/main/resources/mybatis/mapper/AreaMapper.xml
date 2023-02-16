@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doge.dao.mapper.AreaMapper">
+    <sql id="columns">
+        id,
+		city_code as cityCode,
+        area_code as areaCode,
+        area_name as areaName,
+        create_time as createTime,
+        update_time as updateTime
+    </sql>
+    <!--行政区域县区获取-->
+    <select id="getAreaList" parameterType="int"  resultType="AreaDO">
+        SELECT
+        <include refid="columns"/>
+        FROM area
+        WHERE city_code = ${cityCode}
+        ORDER BY area_code
+    </select>
+</mapper>

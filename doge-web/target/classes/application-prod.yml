@@ -1,0 +1,30 @@
+server:
+  port: 80
+spring:
+  datasource:
+    name: doge-datasource
+    url: jdbc:mysql://124.128.87.12:12384/xk_evaluation
+    username: remoteadmin
+    password: wlkj@sdxk
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+  redis:
+    database: 1
+    host: 127.0.0.1
+    port: 6379
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        max-wait: -1
+        min-idle: 0
+  jackson:
+    date-format: "yyyy-MM-dd HH:mm:ss"
+    time-zone: "GMT+8"
+mybatis-plus:
+  config-location: classpath:mybatis/config/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  type-aliases-package: com.doge.dao.entity
+  global-config:
+    db-config:
+      update-strategy: ignored

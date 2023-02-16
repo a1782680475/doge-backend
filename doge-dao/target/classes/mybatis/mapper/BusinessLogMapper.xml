@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doge.dao.mapper.BusinessLogMapper">
+    <sql id="columns">
+        id,
+		title,
+		request_url as requestUrl,
+		request_method as requestMethod,
+        request_params as requestParams,
+        status as status,
+        request_time as requestTime,
+        response as response,
+        response_time as responseTime,
+        target_class_name as targetClassName,
+        target_method_name as targetMethodName,
+        exception,
+        operation_user as operationUser,
+        operation_ip as operationIp,
+        create_time as createTime,
+        update_time as updateTime
+    </sql>
+    <sql id="where_condition">
+        <where>
+            <if test="query.title != null and query.title != ''">
+                and title=#{query.title}
+            </if>
+            <if test="query.operationUser != null and query.operationUser != ''">
+                and operation_user=#{query.operationUser}
+            </if>
+            <if test="query.status != null">
+                and status=#{query.status}
+            </if>
+            <if test="query.startTime != null">
+                and create_time &gt;= #{query.startTime}
+            </if>
+            <if test="query.endTime != null">
+                and create_time &lt;= #{query.endTime}
+            </if>
+        </where>
+    </sql>
+    <sql id="sort_condition">
+        <if test="sorter!=null and sorter.size()>0">
+            order by
+            <foreach collection="sorter.entrySet()" index="field" item="sortType">
+                ${field} ${sortType}
+            </foreach>
+        </if>
+    </sql>
+    <!--根据对象分页查询-->
+    <select id="selectListByPage" parameterType="BusinessLogQueryBO" resultType="BusinessLogDO">
+        SELECT
+        <include refid="columns"/>
+        FROM business_log
+        <include refid="where_condition"/>
+        <include refid="sort_condition"/>
+    </select>
+    <!--清空-->
+    <delete id="clear">
+        truncate table business_log;
+    </delete>
+</mapper>

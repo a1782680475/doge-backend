@@ -1,0 +1,4 @@
+com\xktech\evaluation\entity\User.class
+com\xktech\evaluation\config\DruidConfig.class
+com\xktech\evaluation\mapper\UserMapper.class
+com\xktech\evaluation\entity\Role.class

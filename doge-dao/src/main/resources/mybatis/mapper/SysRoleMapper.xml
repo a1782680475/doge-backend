@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doge.dao.mapper.SysRoleMapper">
+    <sql id="columns">
+        id,
+		role_code as roleCode,
+		role_name as roleName,
+		remark,
+        create_by as createBy,
+        create_time as createTime,
+        update_time as updateTime
+    </sql>
+
+    <sql id="where_condition">
+        <where>
+            <if test="query.roleName != null and query.roleName != ''">
+                and role_name like CONCAT('%',#{query.roleName},'%')
+            </if>
+        </where>
+    </sql>
+    <sql id="ids_split">
+        <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </sql>
+    <sql id="sort_condition">
+        <if test="sorter!=null and sorter.size()>0">
+            order by
+            <foreach collection="sorter.entrySet()" index="field" item="sortType">
+                ${field} ${sortType}
+            </foreach>
+        </if>
+    </sql>
+    <!--根据对象分页查询-->
+    <select id="selectListByPage" parameterType="SysRoleDO" resultType="SysRoleDO">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_role
+        <include refid="where_condition"/>
+        <include refid="sort_condition"/>
+    </select>
+    <!--角色重复性查询-->
+    <select id="checkDuplication" parameterType="SysRoleDO" resultType="Boolean">
+        SELECT count(1) FROM sys_role where role_code=#{query.roleCode} or role_name=#{query.roleName} limit 1;
+    </select>
+</mapper>

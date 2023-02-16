@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doge.dao.mapper.SysUserMapper">
+    <sql id="columns">
+        id,
+		username,
+        nickname as nickName,
+        avatar,
+        email,
+        profile,
+        country,
+        province_code as provinceCode,
+        province,
+        city,
+        city_code as cityCode,
+        address,
+        phone,
+		password,
+		is_enabled as enabled,
+        create_time as createTime,
+        update_time as updateTime
+    </sql>
+
+    <sql id="where_condition">
+        <where>
+            <if test="query.username != null and query.username != ''">
+                and username=#{query.username}
+            </if>
+            <if test="query.enabled != null">
+                and is_enabled=#{query.enabled}
+            </if>
+        </where>
+    </sql>
+    <sql id="ids_split">
+        <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </sql>
+    <sql id="sort_condition">
+        <if test="sorter!=null and sorter.size()>0">
+            order by
+            <foreach collection="sorter.entrySet()" index="field" item="sortType">
+                ${field} ${sortType}
+            </foreach>
+        </if>
+    </sql>
+    <sql id="update_condition">
+        <set>
+            <if test="info.nickName!= null and info.nickName != ''">
+                nickname=#{info.nickName},
+            </if>
+            <if test="info.avatar!= null and info.avatar != ''">
+                avatar=#{info.avatar},
+            </if>
+            email=#{info.email},
+            profile=#{info.profile},
+            country=#{info.country},
+            province_code=#{info.provinceCode},
+            province=#{info.province},
+            city_code=#{info.cityCode},
+            city=#{info.city},
+            address=#{info.address},
+            phone=#{info.phone},
+            update_time=#{info.updateTime}
+        </set>
+    </sql>
+    <!--根据用户名查询-->
+    <select id="getUserByUsername" resultType="SysUserDO">
+        select
+        <include refid="columns"/>
+        from sys_user where username=#{username};
+    </select>
+    <!--根据对象分页查询-->
+    <select id="selectListByPage" parameterType="SysUserDO" resultType="SysUserDO">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_user
+        <include refid="where_condition"/>
+        <include refid="sort_condition"/>
+    </select>
+    <!--获取用户所属角色集合-->
+    <select id="getRoleList" resultType="SysRoleDO">
+        select *
+        from sys_role
+        where id in (select role_id from sys_user_role where user_id = #{id});
+    </select>
+    <!--获取用户拥有的的菜单和权限集合-->
+    <select id="getMenuList" parameterType="int" resultType="SysMenuDO">
+        SELECT t3.*
+        FROM sys_user_role t1
+                 left join sys_role_menu t2 on t1.role_id = t2.role_id
+                 left join sys_menu t3 on t2.menu_id = t3.id
+        where t1.user_id = #{id}
+          and t3.is_visible = true
+        order by t3.sort asc;
+    </select>
+    <!--账户启用-->
+    <update id="enable" parameterType="int">
+        update sys_user
+        set is_enabled  = true,
+            update_time = now()
+        where id = #{id};
+    </update>
+    <!--账户禁用-->
+    <update id="disable" parameterType="int">
+        update sys_user
+        set is_enabled  = false,
+            update_time = now()
+        where id = #{id};
+    </update>
+    <!--账户批量启用-->
+    <update id="enableBatch">
+        update sys_user set is_enabled = true,update_time = now() where id in<include refid="ids_split"/>;
+    </update>
+    <!--账户批量禁用-->
+    <update id="disableBatch">
+        update sys_user set is_enabled = false,update_time = now() where id in<include refid="ids_split"/>;
+    </update>
+    <!--个人资料更新-->
+    <update id="updateInfo">
+        update sys_user
+        <include refid="update_condition"/>
+        where id = #{id};
+    </update>
+</mapper>

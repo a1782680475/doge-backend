@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doge.dao.mapper.SysMenuMapper">
+    <sql id="columns">
+        id,
+		menu_name as menuName,
+		is_frame as frame,
+        path,
+        redirect,
+        pid,
+        type,
+        is_visible as visible,
+        permission as permission,
+        is_cache as cache,
+        icon,
+        sort,
+        create_by as createBy,
+        remark,
+        create_time as createTime,
+        update_time as updateTime
+    </sql>
+
+    <sql id="where_condition">
+        <where>
+
+        </where>
+    </sql>
+    <sql id="ids_split">
+        <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </sql>
+    <sql id="sort_condition">
+        <if test="sorter!=null and sorter.size()>0">
+            order by
+            <foreach collection="sorter.entrySet()" index="field" item="sortType">
+                ${field} ${sortType}
+            </foreach>
+        </if>
+    </sql>
+    <!--根据对象分页查询-->
+    <select id="selectListByPage" parameterType="SysMenuDO" resultType="SysMenuDO">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_menu
+        <include refid="where_condition"/>
+        <include refid="sort_condition"/>
+    </select>
+</mapper>

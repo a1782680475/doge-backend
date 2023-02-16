@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doge.dao.mapper.NotifyUserRemindMapper">
+    <sql id="columns">
+        t1.id,
+		t1.user_id as userId,
+		t1.is_read as `read`,
+        t2.id as remindId,
+        t2.target_type as targetType,
+        t2.target,
+        t2.action,
+        t2.create_time as sendTime,
+        t3.nickname as sender
+    </sql>
+
+    <!--根据对象分页查询-->
+    <select id="selectListByPage" resultType="NotifySubscriptionBO">
+        SELECT
+        <include refid="columns"/>
+        FROM notify_user_remind t1
+        INNER JOIN notify_remind t2 ON t1.remind_id  = t2.id
+        LEFT JOIN sys_user t3 ON t2.sender = t3.id
+        WHERE t1.user_id=#{userId}
+        ORDER BY t2.create_time desc
+    </select>
+
+    <!--指定数目用户未读提醒列表查询-->
+    <select id="selectUnreadListByCount" resultType="NotifySubscriptionBO">
+        SELECT
+        <include refid="columns"/>
+        FROM notify_user_remind t1
+        INNER JOIN notify_remind t2 ON t1.remind_id  = t2.id
+        LEFT JOIN sys_user t3 ON t2.sender = t3.id
+        WHERE t1.user_id=#{userId}
+        AND is_read!=true
+        ORDER BY t2.create_time desc
+        LIMIT 0,#{count}
+    </select>
+
+    <!--用户用户未读提醒数查询-->
+    <select id="getUnreadCount" resultType="Integer">
+        SELECT COUNT(1)
+        FROM notify_user_remind WHERE user_id=${userId} AND is_read=false;
+    </select>
+
+    <!--将未读提醒标记为已读-->
+    <update id="read">
+        UPDATE notify_user_remind SET is_read=1,read_time=now() WHERE id=${id} and user_id=${userId};
+    </update>
+
+    <!--将所有未读提醒标记为已读-->
+    <update id="clearUnread">
+        UPDATE notify_user_remind SET is_read=1,read_time=now() WHERE user_id=${userId} AND is_read!=1;
+    </update>
+</mapper>
