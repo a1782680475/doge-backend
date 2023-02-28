@@ -7,6 +7,7 @@ import com.doge.entity.vo.request.ImgCaptchaVO;
 import com.doge.security.handler.MyAuthenticationException;
 import com.doge.security.JwtAuthenticationToken;
 import com.doge.utils.HttpRequestUtils;
+import com.doge.utils.RsaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -90,6 +91,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
             throw new MyAuthenticationException("验证码错误");
         }
         username = username.trim();
+        password = RsaUtils.decrypt(password);
         JwtAuthenticationToken authRequest = new JwtAuthenticationToken(username, password);
         setDetails(request, authRequest);
         return this.getAuthenticationManager().authenticate(authRequest);
