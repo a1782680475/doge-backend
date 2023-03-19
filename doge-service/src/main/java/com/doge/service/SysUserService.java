@@ -104,4 +104,66 @@ public interface SysUserService extends BaseService<SysUserDTO> {
      * @return java.lang.Boolean
      */
     Boolean updateInfo(Integer id, SysUserInfoDTO userInfo);
+
+    /**
+     * 用户账户绑定邮箱邮件发送
+     *
+     * @param userId 用户id
+     * @param email  email
+     * @return 错误信息，为 null时表示业务成功
+     */
+    String sendBindEmailCode(int userId, String email);
+
+    /**
+     * 用户账户绑定邮箱验证
+     *
+     * @param userId 用户id
+     * @param email  绑定邮箱
+     * @param token  验证token
+     * @return java.lang.String
+     */
+    String bindEmailVerify(int userId, String email, String token);
+
+    /**
+     * 用户账户绑定邮箱修改邮箱验证码发送
+     *
+     * @param userId 用户id
+     * @return java.lang.String
+     */
+    String sendVerificationCodeForChangeEmail(int userId);
+
+    /**
+     * 用户账户绑定邮箱修改邮箱验证码验证
+     *
+     * @param userId 用户id
+     * @param code   验证码
+     * @return java.lang.String
+     */
+    String verifyCodeForChangeEmail(int userId, String code);
+
+    /**
+     * 用户账户密码修改邮箱验证码发送
+     *
+     * @param userId 用户id
+     * @return java.lang.String
+     */
+    String sendVerificationCodeForChangePassword(int userId);
+
+    /**
+     * 用户账户密码修改邮箱验证码验证
+     *
+     * @param userId 用户id
+     * @param code   验证码
+     * @return java.lang.String
+     */
+    String verifyCodeForChangePassword(int userId, String code);
+
+    /**
+     * 用户账户密码修改
+     *
+     * @param userId   用户id
+     * @param password 密码
+     * @return java.lang.String
+     */
+    String changePassword(int userId, String password);
 }

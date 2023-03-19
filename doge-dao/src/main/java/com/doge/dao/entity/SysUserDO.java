@@ -28,6 +28,8 @@ public class SysUserDO implements Serializable {
     private String nickName;
     @TableField(value = "avatar")
     private String avatar;
+    @TableField(value = "account_email")
+    private String accountEmail;
     @TableField(value = "email")
     private String email;
     @TableField(value = "profile")

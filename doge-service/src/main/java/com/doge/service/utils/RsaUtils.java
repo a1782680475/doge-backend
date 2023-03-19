@@ -1,4 +1,4 @@
-package com.doge.utils;
+package com.doge.service.utils;
 
 import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.crypto.asymmetric.RSA;

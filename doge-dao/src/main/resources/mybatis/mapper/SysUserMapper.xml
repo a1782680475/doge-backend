@@ -8,6 +8,7 @@
 		username,
         nickname as nickName,
         avatar,
+        account_email as accountEmail,
         email,
         profile,
         country,
@@ -122,6 +123,22 @@
     <update id="updateInfo">
         update sys_user
         <include refid="update_condition"/>
+        where id = #{id};
+    </update>
+    <!--账户邮箱绑定-->
+    <update id="bindEmail">
+        update sys_user
+        set
+        account_email = #{email},
+        update_time=now()
+        where id = #{id};
+    </update>
+    <!--账户密码修改-->
+    <update id="changePassword">
+        update sys_user
+        set
+        password = #{password},
+        update_time=now()
         where id = #{id};
     </update>
 </mapper>

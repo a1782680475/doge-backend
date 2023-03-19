@@ -7,7 +7,7 @@ import com.doge.entity.vo.request.ImgCaptchaVO;
 import com.doge.security.handler.MyAuthenticationException;
 import com.doge.security.JwtAuthenticationToken;
 import com.doge.utils.HttpRequestUtils;
-import com.doge.utils.RsaUtils;
+import com.doge.service.utils.RsaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.RedisTemplate;

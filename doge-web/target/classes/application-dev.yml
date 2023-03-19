@@ -6,9 +6,9 @@ spring:
     url: jdbc:mysql://localhost:3306/doge
     username: doge
     password: 123456
-#    url: jdbc:mysql://124.128.87.12:12384/xk_evaluation
-#    username: remoteadmin
-#    password: wlkj@sdxk
+    #    url: jdbc:mysql://124.128.87.12:12384/xk_evaluation
+    #    username: remoteadmin
+    #    password: wlkj@sdxk
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     #=====连接池配置=====
@@ -64,10 +64,14 @@ spring:
     restart:
       #热部署生效
       enabled: true
-        #设置重启的目录
+      #设置重启的目录
       #additional-paths: src/main/java
       #classpath目录下的WEB-INF文件夹内容修改不重启
       #exclude: static/**
+  mail:
+    host: 'smtp.qq.com'
+    username: '1782680475@qq.com'
+    password: 'hadlznrspnioeead'
 mybatis-plus:
   config-location: classpath:mybatis/config/mybatis-config.xml
   mapper-locations: classpath:mybatis/mapper/*.xml
@@ -87,3 +91,8 @@ file:
   uploadFolder: 'E://files/'
 rsa:
   privateKey: "MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBANh+CA48Grrjc+mp2WxPe3s82AXLpZekxRjevCW+oOsEnAioTsAJXolH2qH3Lbi4U93wvl3RQ2QRUzZ5EUcJ7fzHVdyEFGUyApYZyxI/WwR4lYXrV5UO/9zTxULvaEZhHBcgjdR+7SdIp/Bfpvy7m2MFXtgb1y4IqGuCOvrIrXYxAgMBAAECgYAJfLxto0Som/8gZkkY7gLDS89Lsbj4BEh+5oPoQ4pZwkH0Pyv0TnTOH0/9eQ+P4MQMHdi508nYQMocwQF4036SWKKp3VywqE1jL4EG4PL/6xzR7CYCrNtRKeVdjfD9CrQH1CrRJ3Qa9oKtnwlngFo3WXEKFq3CHSWRrenJRv+AAQJBAPX3Tv9fcYnRicgGBAEpBBBSXYoxY7L9nh/LUmQlD2fOJz2QfX/f1bBA970aaNofdyHSFe6NX03fCLO/XajIrQECQQDhUuuk7L/ej5QVfpqLwUF3hyputDP0yhZOIqKFsA1JEzziCmoMIchy0ZEVcZxIBCYJTx4w3g9cr9G9D0vDH1kxAkEAvqcurZXenPQ1dzzqd7fCNaCSbt6vp/scSQrB12w+j7jlA7xu+uKWcWM6ZHMHGSPQpP+CDoG4gNTDmwhXYdADAQJBAKIm5VPz2IRW+S+aw6dNdUqKaBvw7O79u52RSTpCHt12zbqx2e1PJoySigFPmDMvYRwT5tsuAwolsR+IcXJDDhECQQCQ+wXGSAZt0a9i18CnlKacDROq0PobJihaCskEFBbaylWkeOli1ffoK+zDu2G19gQ8aFGD3dc3wL0oNFS2nvQB"
+# 站点相关信息配置
+website:
+  name: "Doge"
+  link: "http://localhost:8000"
+  logo: "https://user-images.githubusercontent.com/32875468/219337692-1a277d2a-fa56-4d09-862a-a73335462889.png"

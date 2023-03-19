@@ -29,6 +29,7 @@
         <easy-captcha-version>1.6.2</easy-captcha-version>
         <common-pool2-version>2.10.0</common-pool2-version>
         <userAgentUtils-version>1.21</userAgentUtils-version>
+        <mail-version>3.0.4</mail-version>
     </properties>
     <dependencyManagement>
         <dependencies>

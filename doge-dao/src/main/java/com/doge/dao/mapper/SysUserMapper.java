@@ -94,4 +94,22 @@ public interface SysUserMapper extends BaseMapper<SysUserDO> {
      * @return java.lang.Boolean
      */
     Boolean updateInfo(@Param("id")Integer id,@Param("info") SysUserInfoBO userInfo);
+
+    /**
+     * 账户邮箱绑定
+     *
+     * @param id 用户id
+     * @param email 邮箱
+     * @return java.lang.Boolean
+     */
+    Boolean bindEmail(@Param("id")Integer id,@Param("email")String email);
+
+    /**
+     * 账户密码修改
+     *
+     * @param id 用户id
+     * @param password 密码
+     * @return java.lang.Boolean
+     */
+    Boolean changePassword(@Param("id")Integer id,@Param("password")String password);
 }
