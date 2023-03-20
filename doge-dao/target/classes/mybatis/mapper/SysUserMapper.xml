@@ -89,7 +89,7 @@
     </select>
     <!--获取用户拥有的的菜单和权限集合-->
     <select id="getMenuList" parameterType="int" resultType="SysMenuDO">
-        SELECT t3.*
+        SELECT DISTINCT t3.*
         FROM sys_user_role t1
                  left join sys_role_menu t2 on t1.role_id = t2.role_id
                  left join sys_menu t3 on t2.menu_id = t3.id
