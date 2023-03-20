@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @ApiModel
 public class SysUserPasswordInfo {
-    @ApiModelProperty(value="密码（RSA加密）",position = 1)
+    @ApiModelProperty(value="用户id",position = 1)
+    private Integer id;
+    @ApiModelProperty(value="密码（RSA加密）",position = 2)
     private String password;
 }

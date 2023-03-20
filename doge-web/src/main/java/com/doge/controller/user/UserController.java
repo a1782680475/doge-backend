@@ -96,9 +96,9 @@ public class UserController {
         return resultVO;
     }
 
-    @PostMapping("/changeEmail/verificationCodeVerify/{code}")
+    @PostMapping("/changeEmail/verificationCodeVerify")
     @ApiOperation(value = "用户账户绑定邮箱修改邮箱验证码验证")
-    public SimpleResultVO verifyCodeForChangeEmail(@PathVariable String code) {
+    public SimpleResultVO verifyCodeForChangeEmail(@RequestBody String code) {
         SimpleResultVO resultVO = new SimpleResultVO();
         int userId = SecurityUtils.getUserId();
         String errorMessage = userService.verifyCodeForChangeEmail(userId, code);
@@ -122,9 +122,9 @@ public class UserController {
         return resultVO;
     }
 
-    @PostMapping("/changePassword/verificationCodeVerify/{code}")
+    @PostMapping("/changePassword/verificationCodeVerify")
     @ApiOperation(value = "用户账户密码修改邮箱验证码验证")
-    public SimpleResultVO verifyCodeForChangePassword(@PathVariable String code) {
+    public SimpleResultVO verifyCodeForChangePassword(@RequestBody String code) {
         SimpleResultVO resultVO = new SimpleResultVO();
         int userId = SecurityUtils.getUserId();
         String errorMessage = userService.verifyCodeForChangePassword(userId, code);
@@ -137,10 +137,10 @@ public class UserController {
 
     @PostMapping("/changePassword")
     @ApiOperation(value = "用户账户密码修改")
-    public SimpleResultVO changePassword(@RequestBody SysUserPasswordInfo sysUserPasswordInfo) {
+    public SimpleResultVO changePassword(@RequestBody String password) {
         SimpleResultVO resultVO = new SimpleResultVO();
         int userId = SecurityUtils.getUserId();
-        String errorMessage = userService.changePassword(userId, sysUserPasswordInfo.getPassword());
+        String errorMessage = userService.changePassword(userId, password);
         if (errorMessage != null) {
             resultVO.isSuccess = false;
             resultVO.errorMessage = errorMessage;

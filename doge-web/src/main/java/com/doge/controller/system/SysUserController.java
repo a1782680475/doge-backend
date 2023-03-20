@@ -1,8 +1,10 @@
 package com.doge.controller.system;
 
+import com.doge.entity.vo.request.SysUserPasswordInfo;
 import com.doge.entity.vo.request.SysUserQueryVO;
 import com.doge.entity.vo.request.SysUserRoleSettingVO;
 import com.doge.entity.vo.response.AntPageVO;
+import com.doge.entity.vo.response.SimpleResultVO;
 import com.doge.entity.vo.response.SysUserRoleVO;
 import com.doge.service.entity.AntPageDTO;
 import com.doge.service.entity.PageDTO;
@@ -99,5 +101,20 @@ public class SysUserController {
     @Log(title = "账户批量禁用")
     public void disableBatch(@RequestBody List<Integer> ids) {
         sysUserService.disableBatch(ids);
+    }
+
+    @PreAuthorize("@aps.hasPermission('sys:user:resetPassword')")
+    @PostMapping("/resetPassword")
+    @ApiOperation(value = "账户密码重置")
+    @Log(title = "账户密码重置")
+    public SimpleResultVO resetPassword(@RequestBody SysUserPasswordInfo sysUserPasswordInfo) {
+        SimpleResultVO resultVO = new SimpleResultVO();
+        int userId = sysUserPasswordInfo.getId();
+        String errorMessage = sysUserService.changePassword(userId, sysUserPasswordInfo.getPassword());
+        if (errorMessage != null) {
+            resultVO.isSuccess = false;
+            resultVO.errorMessage = errorMessage;
+        }
+        return resultVO;
     }
 }
