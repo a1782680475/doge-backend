@@ -73,15 +73,16 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         ImgCaptchaVO imgCaptchaVO = JSON.parseObject(imgCaptcha, ImgCaptchaVO.class);
         String uuid = imgCaptchaVO.getCaptchaKey();
         String code = imgCaptchaVO.getCaptchaCode();
+        String redisKey = "doge:account:captcha_" + uuid;
         if (username == null) {
             username = "";
         }
         if (password == null) {
             password = "";
         }
-        String redisCaptcha = redisTemplate.opsForValue().get(uuid).toString();
+        String redisCaptcha = redisTemplate.opsForValue().get(redisKey).toString();
         //清除验证码
-        redisTemplate.delete(uuid);
+        redisTemplate.delete(redisKey);
         if (StrUtil.isBlank(redisCaptcha)) {
             logger.error("验证码不存在或已过期");
             throw new MyAuthenticationException("验证码不存在或已过期");

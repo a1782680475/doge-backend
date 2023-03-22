@@ -109,6 +109,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/v3/**",
                         "/doc.html",
                         "/auth/captcha",
+                        "/user/bindEmailVerify",
                         "/druid/**",
                         "/files/**"
                 ).permitAll()

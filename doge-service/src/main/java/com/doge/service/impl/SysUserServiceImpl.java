@@ -160,7 +160,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUserDO
             errorMessage = "该邮箱已被绑定";
             return errorMessage;
         }
-        String redisKey = "BindEmail" + "_" + userId + "_" + email;
+        String redisKey = "doge:account:bindEmail" + "_" + userId + "_" + email;
         Object redisValue = redisTemplate.opsForValue().get(redisKey);
         String linkUrl = null;
         if (redisValue != null) {
@@ -187,7 +187,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUserDO
     @Override
     public String bindEmailVerify(int userId, String email, String token) {
         String errorMessage;
-        String redisKey = "BindEmail" + "_" + userId + "_" + email;
+        String redisKey = "doge:account:bindEmail" + "_" + userId + "_" + email;
         Object redisValue = redisTemplate.opsForValue().get(redisKey);
         if (redisValue == null) {
             errorMessage = "验证链接无效或已过期";
@@ -213,7 +213,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUserDO
             errorMessage = "用户未绑定邮箱";
             return errorMessage;
         }
-        String redisKey = "ChangeEmail" + "_" + userId;
+        String redisKey = "doge:account:changeEmail" + "_" + userId;
         Object redisValue = redisTemplate.opsForValue().get(redisKey);
         String verificationCode;
         if (redisValue == null) {
@@ -239,7 +239,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUserDO
     @Override
     public String verifyCodeForChangeEmail(int userId, String code) {
         String errorMessage;
-        String redisKey = "ChangeEmail" + "_" + userId;
+        String redisKey = "doge:account:changeEmail" + "_" + userId;
         Object redisValue = redisTemplate.opsForValue().get(redisKey);
         if (redisValue == null) {
             errorMessage = "验证码已过期";
@@ -263,7 +263,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUserDO
             errorMessage = "用户未绑定邮箱";
             return errorMessage;
         }
-        String redisKey = "ChangePassword" + "_" + userId;
+        String redisKey = "doge:account:changePassword" + "_" + userId;
         Object redisValue = redisTemplate.opsForValue().get(redisKey);
         String verificationCode;
         if (redisValue == null) {
@@ -289,7 +289,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUserDO
     @Override
     public String verifyCodeForChangePassword(int userId, String code) {
         String errorMessage;
-        String redisKey = "ChangePassword" + "_" + userId;
+        String redisKey = "doge:account:changePassword" + "_" + userId;
         Object redisValue = redisTemplate.opsForValue().get(redisKey);
         if (redisValue == null) {
             errorMessage = "验证码已过期";

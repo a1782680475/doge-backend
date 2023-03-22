@@ -124,7 +124,7 @@ public class AuthUserController {
         String result = captcha.text();
         String uuid = UUID.randomUUID().toString().replace("-", "");
         // 保存到redis
-        redisTemplate.opsForValue().set(uuid, result, 60 * 5 * 1000L, TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set("doge:account:captcha_"+uuid, result, 60 * 5 * 1000L, TimeUnit.MILLISECONDS);
         // 验证码信息
         return new ImgCaptchaVO(uuid, captcha.toBase64());
     }
