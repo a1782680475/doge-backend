@@ -11,7 +11,7 @@
  Target Server Version : 80030 (8.0.30)
  File Encoding         : 65001
 
- Date: 16/02/2023 17:52:06
+ Date: 28/03/2023 20:01:17
 */
 
 SET NAMES utf8mb4;
@@ -3200,7 +3200,7 @@ CREATE TABLE `business_log`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 24 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '业务日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 26 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '业务日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of business_log
@@ -3228,6 +3228,8 @@ INSERT INTO `business_log` VALUES (20, '角色授权', '/sys/role/roleAuthorize'
 INSERT INTO `business_log` VALUES (21, '角色授权', '/sys/role/roleAuthorize', 'PUT', '{\"id\":3,\"menuIds\":[6,2,1,7,8,10,18,19,11,3,13,14,15,4,16,17,21,20,29,30,28,26,5,12]}', 1, '2023-02-16 16:32:28', NULL, '2023-02-16 16:32:28', 'com.doge.controller.system.SysRoleController', 'roleAuthorize', NULL, 'user1', '127.0.0.1', '2023-02-16 16:32:28', '2023-02-16 16:32:28');
 INSERT INTO `business_log` VALUES (22, '角色授权', '/sys/role/roleAuthorize', 'PUT', '{\"id\":2,\"menuIds\":[1,2,3,4,6,7,8,10,18,19,11,12,13,14,15,16,17,20,21,29,30]}', 1, '2023-02-16 16:32:56', NULL, '2023-02-16 16:32:56', 'com.doge.controller.system.SysRoleController', 'roleAuthorize', NULL, 'user1', '127.0.0.1', '2023-02-16 16:32:56', '2023-02-16 16:32:56');
 INSERT INTO `business_log` VALUES (23, '菜单编辑', '/sys/menu/update', 'PUT', '{\"frame\":false,\"icon\":\"SettingOutlined\",\"id\":1,\"menuName\":\"系统管理\",\"path\":\"/system\",\"permission\":\"sys\",\"pid\":0,\"redirect\":\"\",\"remark\":\"\",\"sort\":1,\"type\":1,\"visible\":true}', 1, '2023-02-16 17:26:15', NULL, '2023-02-16 17:26:15', 'com.doge.controller.system.SysMenuController', 'update', NULL, 'user1', '127.0.0.1', '2023-02-16 17:26:15', '2023-02-16 17:26:15');
+INSERT INTO `business_log` VALUES (24, '账户密码重置', '/sys/user/resetPassword', 'POST', '{\"id\":3,\"password\":\"07XjDAaV7mjvJsfSc2FxRG0w+FwEVJ2lw0PkRpmrjp5dTiwfj/RElIdiuQnmbYLHSYl3XERwSxA00IzVE46qjQVTkdd3Ru9WIFD5k3JVCtxt6yZ3yh3Il5x4m5bHp7nesJ3U9qvPv1D+MlCIvz71UsYY3FeuD0sHjkVj5n+d2pI=\"}', 1, '2023-03-20 13:51:25', '{\"isSuccess\":true}', '2023-03-20 13:51:26', 'com.doge.controller.system.SysUserController', 'resetPassword', NULL, 'user1', '127.0.0.1', '2023-03-20 13:51:26', '2023-03-20 13:51:26');
+INSERT INTO `business_log` VALUES (25, '账户密码重置', '/sys/user/resetPassword', 'POST', '{\"id\":3,\"password\":\"InaeR2eZcG7DtEmu9+Dpzj87tO9eAKMfw4KQS6dizUk2y0YCvj3fkLWeAJ/o43dk9BrcE/NSC+iJ4x607ProvEnivBLNgOuakc53D8BBiforumSCVxkRmFuj82MyodaUHFxy5ASalLx9lM5i3tQN5A9hBKczCqW58A2zixGyeI8=\"}', 1, '2023-03-20 13:51:35', '{\"isSuccess\":true}', '2023-03-20 13:51:35', 'com.doge.controller.system.SysUserController', 'resetPassword', NULL, 'user1', '127.0.0.1', '2023-03-20 13:51:35', '2023-03-20 13:51:35');
 
 -- ----------------------------
 -- Table structure for city
@@ -3734,7 +3736,7 @@ CREATE TABLE `notify_user_remind`  (
 -- Records of notify_user_remind
 -- ----------------------------
 INSERT INTO `notify_user_remind` VALUES (1, 2, 1, 1, NULL, '2021-10-14 13:46:52', '2021-10-14 13:46:54');
-INSERT INTO `notify_user_remind` VALUES (2, 2, 2, 0, '2023-02-13 16:19:48', '2023-02-10 12:23:39', '2023-02-10 12:23:43');
+INSERT INTO `notify_user_remind` VALUES (2, 2, 2, 1, '2023-02-28 10:48:25', '2023-02-10 12:23:39', '2023-02-10 12:23:43');
 
 -- ----------------------------
 -- Table structure for province
@@ -3811,7 +3813,7 @@ CREATE TABLE `sys_menu`  (
   `update_time` datetime NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uniq_menu`(`menu_name` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 31 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 32 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_menu
@@ -3824,7 +3826,7 @@ INSERT INTO `sys_menu` VALUES (5, '系统日志', NULL, '/log', '', 0, 1, 1, 'lo
 INSERT INTO `sys_menu` VALUES (6, '用户新增', NULL, '', NULL, 2, 3, 1, 'sys:user:add', NULL, NULL, 1, 'super', '', '2021-07-08 16:44:29', '2021-07-30 11:04:19');
 INSERT INTO `sys_menu` VALUES (7, '用户编辑', NULL, '', NULL, 2, 3, 1, 'sys:user:edit', NULL, NULL, 2, 'super', '用户编辑按钮', '2021-07-12 09:57:15', '2021-07-30 11:04:28');
 INSERT INTO `sys_menu` VALUES (8, '用户删除', NULL, '', NULL, 2, 3, 1, 'sys:user:delete', NULL, NULL, 3, 'super', '', '2021-07-12 16:58:33', '2021-07-30 11:04:51');
-INSERT INTO `sys_menu` VALUES (10, '角色分配', NULL, '', NULL, 2, 3, 1, 'sys:user:roleSetting', NULL, NULL, 4, 'super', '', '2021-07-30 08:51:39', '2021-07-30 11:05:06');
+INSERT INTO `sys_menu` VALUES (10, '角色分配', NULL, '', NULL, 2, 3, 1, 'sys:user:roleSetting', NULL, NULL, 6, 'super', '', '2021-07-30 08:51:39', '2021-07-30 11:05:06');
 INSERT INTO `sys_menu` VALUES (11, '角色新增', NULL, '', NULL, 3, 3, 1, 'sys:role:add', NULL, NULL, 1, 'super', '', '2021-07-30 08:52:10', '2021-07-30 11:05:57');
 INSERT INTO `sys_menu` VALUES (12, '角色编辑', NULL, '', NULL, 3, 3, 1, 'sys:role:edit', NULL, NULL, 2, 'super', '', '2021-07-30 08:52:31', '2021-07-30 11:06:04');
 INSERT INTO `sys_menu` VALUES (13, '角色删除', NULL, '', NULL, 3, 3, 1, 'sys:role:delete', NULL, NULL, 3, 'super', '', '2021-07-30 08:52:45', '2021-07-30 11:06:16');
@@ -3832,14 +3834,15 @@ INSERT INTO `sys_menu` VALUES (14, '角色授权', NULL, '', NULL, 3, 3, 1, 'sys
 INSERT INTO `sys_menu` VALUES (15, '菜单新增', NULL, '', NULL, 4, 3, 1, 'sys:menu:add', NULL, NULL, 1, 'super', '', '2021-07-30 08:54:45', '2021-07-30 11:07:03');
 INSERT INTO `sys_menu` VALUES (16, '菜单编辑', NULL, '', NULL, 4, 3, 1, 'sys:menu:edit', NULL, NULL, 2, 'super', '', '2021-07-30 08:55:05', '2021-07-30 11:07:09');
 INSERT INTO `sys_menu` VALUES (17, '菜单删除', NULL, '', NULL, 4, 3, 1, 'sys:menu:delete', NULL, NULL, 3, 'super', '', '2021-07-30 08:55:25', '2021-07-30 11:07:16');
-INSERT INTO `sys_menu` VALUES (18, '用户启用', NULL, '', NULL, 2, 3, 1, 'sys:user:enable', NULL, '', 5, 'super', '', '2021-08-26 17:23:53', '2021-08-26 17:23:53');
-INSERT INTO `sys_menu` VALUES (19, '用户禁用', NULL, '', NULL, 2, 3, 1, 'sys:user:disable', NULL, '', 6, 'super', '', '2021-08-26 17:24:20', '2021-08-26 17:24:20');
+INSERT INTO `sys_menu` VALUES (18, '用户启用', NULL, '', NULL, 2, 3, 1, 'sys:user:enable', NULL, '', 4, 'super', '', '2021-08-26 17:23:53', '2021-08-26 17:23:53');
+INSERT INTO `sys_menu` VALUES (19, '用户禁用', NULL, '', NULL, 2, 3, 1, 'sys:user:disable', NULL, '', 5, 'super', '', '2021-08-26 17:24:20', '2021-08-26 17:24:20');
 INSERT INTO `sys_menu` VALUES (20, '系统监控', NULL, '/monitor', NULL, 0, 1, 1, 'monitor', NULL, 'DashboardOutlined', 2, 'super', '', '2021-08-28 13:42:01', '2021-08-28 13:42:33');
 INSERT INTO `sys_menu` VALUES (21, '服务监控', NULL, '/monitor/server', NULL, 20, 2, 1, 'monitor:server', NULL, NULL, 1, 'super', '', '2021-08-28 13:43:27', '2021-08-28 13:43:46');
 INSERT INTO `sys_menu` VALUES (26, '操作日志', NULL, '/log/businessLog', '', 5, 2, 1, 'log:businessLog', NULL, NULL, 1, 'super', '', '2021-09-01 15:01:12', '2021-09-01 16:13:16');
 INSERT INTO `sys_menu` VALUES (28, '日志删除', NULL, '', NULL, 26, 3, 1, 'log:businessLog:delete', NULL, '', 1, 'super', '', '2021-09-02 14:12:57', '2021-09-02 14:12:57');
 INSERT INTO `sys_menu` VALUES (29, '数据库监控', 0, '/monitor/database', NULL, 20, 2, 1, 'monitor:database', NULL, NULL, 2, 'user1', '', '2021-09-27 15:16:35', '2021-09-27 15:59:17');
 INSERT INTO `sys_menu` VALUES (30, 'Redis监控', NULL, '/monitor/redis', '', 20, 2, 1, 'monitor:redis', NULL, NULL, 3, 'user1', '', '2021-09-27 17:14:26', '2021-09-28 14:08:12');
+INSERT INTO `sys_menu` VALUES (31, '密码重置', NULL, '', NULL, 2, 3, 1, 'sys:user:resetPassword', NULL, '', 7, 'super', '', '2023-03-20 13:58:29', '2023-03-20 13:58:33');
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -3937,6 +3940,7 @@ CREATE TABLE `sys_user`  (
   `username` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '用户名',
   `nickname` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '昵称',
   `avatar` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '头像',
+  `account_email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '账户邮箱',
   `email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '邮箱',
   `profile` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '简介',
   `country` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '国家',
@@ -3957,9 +3961,9 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 'super', 'super', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '$2a$10$qykZf8OgR9mzHy.kWp7gv.yMfjv2hLnUs5TAso0biKWIhEG567Vvi', 1, '2021-06-28 11:48:32', '2021-06-29 16:24:16');
-INSERT INTO `sys_user` VALUES (2, 'user1', 'user1', 'http://localhost:8080/files/20220806/bc1fcf06-c222-4079-87b5-a36d795c27df.jpg', 'a1782680475@outlook.com', 'Hello World！', '中国', 370000, '山东省', 370100, '济南市', '历下区姜家花园', '13011782700', '$2a$10$VY7KNg6inJSYZnKhIfGWUe34sXUtYa2vABK1d4huUuQ3qZV8s7NOy', 1, '2021-06-28 11:48:35', '2023-02-16 15:15:49');
-INSERT INTO `sys_user` VALUES (3, 'user2', 'user2', 'http://localhost:8080/files/20230211/75b75afa-a2b0-419b-be76-3024b68cad2e.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '$2a$10$YK3helscCvrXYo4nO4DDtuvKXCSFOWWr726Ik1CQvqUYIr5LuiNJ6', 1, '2021-06-28 11:48:38', '2023-02-11 11:20:11');
+INSERT INTO `sys_user` VALUES (1, 'super', 'super', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '$2a$10$qykZf8OgR9mzHy.kWp7gv.yMfjv2hLnUs5TAso0biKWIhEG567Vvi', 1, '2021-06-28 11:48:32', '2021-06-29 16:24:16');
+INSERT INTO `sys_user` VALUES (2, 'user1', 'user1', 'http://localhost:8080/files/20220806/bc1fcf06-c222-4079-87b5-a36d795c27df.jpg', 'a1782680475@outlook.com', 'a1782680475@outlook.com', 'Hello World！', '中国', 370000, '山东省', 370100, '济南市', '历下区姜家花园', '13011782700', '$2a$10$PerHFuBkFJoOZSyMgSdK.OtdCCcxKpzZef7PHRvqWrkKoU7Jdsodq', 1, '2021-06-28 11:48:35', '2023-03-28 19:47:50');
+INSERT INTO `sys_user` VALUES (3, 'user2', 'user2', 'http://localhost:8080/files/20230211/75b75afa-a2b0-419b-be76-3024b68cad2e.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '$2a$10$7wbBOhN7DpouWJ7WArDph.gzw9q8C4XmfkSzk3lJM4kMG5jiDjR6S', 1, '2021-06-28 11:48:38', '2023-03-20 13:51:34');
 
 -- ----------------------------
 -- Table structure for sys_user_role
