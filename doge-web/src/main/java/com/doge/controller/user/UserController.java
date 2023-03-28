@@ -1,10 +1,12 @@
 package com.doge.controller.user;
 
+import com.doge.entity.vo.request.FindPasswordVerifyCodeVO;
 import com.doge.entity.vo.request.SysUserBindEmailInfoVO;
 import com.doge.entity.vo.request.SysUserInfoVO;
-import com.doge.entity.vo.request.SysUserPasswordInfo;
 import com.doge.entity.vo.response.SimpleResultVO;
+import com.doge.entity.vo.response.SimpleTokenResultVO;
 import com.doge.entity.vo.response.SysUserSecurityInfoVO;
+import com.doge.service.entity.SimpleTokenResultDTO;
 import com.doge.service.entity.SysUserInfoDTO;
 import com.doge.entity.vo.response.SysUserVO;
 import com.doge.service.SysUserService;
@@ -63,19 +65,6 @@ public class UserController {
         SimpleResultVO resultVO = new SimpleResultVO();
         int userId = SecurityUtils.getUserId();
         String errorMessage = userService.sendBindEmailCode(userId, email);
-        if (errorMessage != null) {
-            resultVO.isSuccess = false;
-            resultVO.errorMessage = errorMessage;
-        }
-        return resultVO;
-    }
-
-    @PostMapping("/bindEmailVerify")
-    @ApiOperation(value = "用户绑定邮箱验证")
-    public SimpleResultVO bindEmailVerify(@RequestBody SysUserBindEmailInfoVO sysUserBindEmailInfoVO) {
-        SimpleResultVO resultVO = new SimpleResultVO();
-        int userId = SecurityUtils.getUserId();
-        String errorMessage = userService.bindEmailVerify(userId, sysUserBindEmailInfoVO.getEmail(), sysUserBindEmailInfoVO.getToken());
         if (errorMessage != null) {
             resultVO.isSuccess = false;
             resultVO.errorMessage = errorMessage;
@@ -147,4 +136,5 @@ public class UserController {
         }
         return resultVO;
     }
+
 }

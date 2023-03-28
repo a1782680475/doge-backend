@@ -69,8 +69,8 @@ public class SwaggerConfig implements WebMvcConfigurer, ApiListingScannerPlugin 
      */
     private ApiInfo apiInfo() {
         Contact contact = new Contact("山东星科智能科技股份有限公司", "https://www.xktech.com", "xktechrs@163.com");
-        return new ApiInfoBuilder().title("多吉后台管理系统接口文档")
-                .description("多吉后台管理系统接口文档")
+        return new ApiInfoBuilder().title("Doge后台管理系统接口文档")
+                .description("Doge后台管理系统接口文档")
                 .contact(contact)
                 .version("1.0")
                 .build();

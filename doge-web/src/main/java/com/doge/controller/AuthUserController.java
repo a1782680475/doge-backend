@@ -1,9 +1,14 @@
 package com.doge.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.doge.entity.vo.request.FindPasswordVO;
+import com.doge.entity.vo.request.FindPasswordVerifyCodeVO;
+import com.doge.entity.vo.request.SysUserBindEmailInfoVO;
 import com.doge.entity.vo.request.SysUserRegisterInfoVO;
 import com.doge.entity.vo.response.*;
 import com.doge.service.common.MessageResult;
+import com.doge.service.entity.SendVerificationCodeForPasswordResultDTO;
+import com.doge.service.entity.SimpleTokenResultDTO;
 import com.doge.service.entity.SysUserRegisterInfoDTO;
 import com.wf.captcha.ArithmeticCaptcha;
 import com.doge.service.BulletinService;
@@ -17,10 +22,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -128,4 +130,58 @@ public class AuthUserController {
         // 验证码信息
         return new ImgCaptchaVO(uuid, captcha.toBase64());
     }
+
+    @PostMapping("/bindEmailVerify")
+    @ApiOperation(value = "用户绑定邮箱验证")
+    public SimpleResultVO bindEmailVerify(@RequestBody SysUserBindEmailInfoVO sysUserBindEmailInfoVO) {
+        SimpleResultVO resultVO = new SimpleResultVO();
+        String errorMessage = userService.bindEmailVerify(sysUserBindEmailInfoVO.getEmail(), sysUserBindEmailInfoVO.getToken());
+        if (errorMessage != null) {
+            resultVO.isSuccess = false;
+            resultVO.errorMessage = errorMessage;
+        }
+        return resultVO;
+    }
+
+    @PutMapping("/findPassword/sendVerificationCode")
+    @ApiOperation(value = "用户账户密码找回邮箱验证码发送")
+    public SendVerificationCodeForPasswordResultVO sendVerificationCodeForFindPassword(@RequestBody String username) {
+        SendVerificationCodeForPasswordResultVO resultVO = new SendVerificationCodeForPasswordResultVO();
+        SendVerificationCodeForPasswordResultDTO resultDTO = userService.sendVerificationCodeForFindPassword(username);
+        if (resultDTO.getErrorMessage() != null) {
+            resultVO.isSuccess = false;
+            resultVO.errorMessage = resultDTO.getErrorMessage();
+        } else {
+            resultVO.setEmail(resultDTO.getEmail());
+            resultVO.setToken(resultDTO.getToken());
+        }
+        return resultVO;
+    }
+
+    @PostMapping("/findPassword/verificationCodeVerify")
+    @ApiOperation(value = "用户账户密码找回邮箱验证码验证")
+    public SimpleTokenResultVO verifyCodeForFindPassword(@RequestBody FindPasswordVerifyCodeVO findPasswordVO) {
+        SimpleTokenResultVO resultVO = new SimpleTokenResultVO();
+        SimpleTokenResultDTO resultDTO = userService.verifyCodeForFindPassword(findPasswordVO.getToken(), findPasswordVO.getCode());
+        if (resultDTO.getErrorMessage() != null) {
+            resultVO.isSuccess = false;
+            resultVO.errorMessage = resultDTO.getErrorMessage();
+        }else {
+            resultVO.setToken(resultDTO.getToken());
+        }
+        return resultVO;
+    }
+
+    @PostMapping("/findPassword/changePassword")
+    @ApiOperation(value = "用户账户密码找回密码修改")
+    public SimpleResultVO changePasswordForFindPassword(@RequestBody FindPasswordVO findPasswordVO) {
+        SimpleResultVO resultVO = new SimpleResultVO();
+        String errorMessage = userService.changePasswordForFindPassword(findPasswordVO.getToken(), findPasswordVO.getPassword());
+        if (errorMessage != null) {
+            resultVO.isSuccess = false;
+            resultVO.errorMessage = errorMessage;
+        }
+        return resultVO;
+    }
+
 }

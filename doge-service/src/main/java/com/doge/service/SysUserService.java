@@ -117,12 +117,11 @@ public interface SysUserService extends BaseService<SysUserDTO> {
     /**
      * 用户账户绑定邮箱验证
      *
-     * @param userId 用户id
      * @param email  绑定邮箱
      * @param token  验证token
      * @return java.lang.String
      */
-    String bindEmailVerify(int userId, String email, String token);
+    String bindEmailVerify(String email, String token);
 
     /**
      * 用户账户绑定邮箱修改邮箱验证码发送
@@ -166,4 +165,30 @@ public interface SysUserService extends BaseService<SysUserDTO> {
      * @return java.lang.String
      */
     String changePassword(int userId, String password);
+
+    /**
+     * 用户账户密码找回邮箱验证码验证
+     *
+     * @param username 用户名
+     * @return java.lang.String
+     */
+    SendVerificationCodeForPasswordResultDTO sendVerificationCodeForFindPassword(String username);
+
+    /**
+     * 用户账户密码找回邮箱验证码验证
+     *
+     * @param token 验证token
+     * @param code  验证码
+     * @return java.lang.String
+     */
+    SimpleTokenResultDTO verifyCodeForFindPassword(String token, String code);
+
+    /**
+     * 用户账户密码找回邮箱验证码验证
+     *
+     * @param token    验证token
+     * @param password 新密码
+     * @return java.lang.String
+     */
+    String changePasswordForFindPassword(String token, String password);
 }
