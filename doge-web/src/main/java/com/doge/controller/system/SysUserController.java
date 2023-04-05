@@ -66,14 +66,15 @@ public class SysUserController {
     @PostMapping("/add")
     @ApiOperation(value = "用户新增")
     @Log(title = "用户新增")
-    public void add(@RequestBody SysUserAddVO sysUserAddVO) {
-        SysUserDTO sysUserDTO = BeanUtils.map(sysUserAddVO, SysUserDTO.class);
-        Date now = new Date();
-        sysUserDTO.setNickName(sysUserDTO.getUsername());
-        sysUserDTO.setPassword(new BCryptPasswordEncoder().encode(RsaUtils.decrypt(sysUserDTO.getPassword())));
-        sysUserDTO.setCreateTime(now);
-        sysUserDTO.setUpdateTime(now);
-        sysUserService.save(sysUserDTO);
+    public SimpleResultVO add(@RequestBody SysUserAddVO sysUserAddVO) {
+        SimpleResultVO resultVO = new SimpleResultVO();
+        SysUserAddDTO sysUserAddDTO = BeanUtils.map(sysUserAddVO, SysUserAddDTO.class);
+        String errorMessage = sysUserService.addUser(sysUserAddDTO);
+        if (errorMessage != null) {
+            resultVO.isSuccess = false;
+            resultVO.errorMessage = errorMessage;
+        }
+        return resultVO;
     }
 
     @PreAuthorize("@aps.hasPermission('sys:user:enable')")

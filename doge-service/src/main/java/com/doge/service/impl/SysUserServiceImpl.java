@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 /**
  * 用户服务实现类
@@ -64,6 +65,43 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUserDO
     }
 
     @Override
+    public String addUser(SysUserAddDTO userAddDTO) {
+        String errorMessage;
+        String pattern = "^[a-zA-Z][a-zA-Z0-9_]+$";
+        boolean isMatch = Pattern.matches(pattern, userAddDTO.getUsername());
+        if (!isMatch) {
+            errorMessage = "用户名只能由字母、数字、下划线组成，且必须以字母开头";
+            return errorMessage;
+        }
+        int minLength = 4;
+        int maxLength = 20;
+        if (userAddDTO.getUsername().length() < minLength || userAddDTO.getUsername().length() > maxLength) {
+            errorMessage = "用户名不能短于4个字符长于20个字符";
+            return errorMessage;
+        }
+        QueryWrapper<SysUserDO> wrapper = new QueryWrapper();
+        wrapper.eq("username", userAddDTO.getUsername());
+        if (baseMapper.selectOne(wrapper) != null) {
+            errorMessage = "用户名已存在";
+            return errorMessage;
+        } else {
+            Date now = new Date();
+            SysUserDO user = new SysUserDO();
+            user.setUsername(userAddDTO.getUsername());
+            user.setNickName(userAddDTO.getUsername());
+            user.setPassword(new BCryptPasswordEncoder().encode(RsaUtils.decrypt(userAddDTO.getPassword())));
+            user.setEnabled(true);
+            user.setCreateTime(now);
+            user.setUpdateTime(now);
+            if (baseMapper.insert(user) != 1) {
+                errorMessage = "未知错误";
+                return errorMessage;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public MessageResult<String> register(SysUserRegisterInfoDTO userRegisterInfoDTO) {
         Boolean success = true;
         String message;
@@ -73,10 +111,14 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUserDO
             success = false;
             message = "用户名已存在";
         } else {
+            Date now = new Date();
             SysUserDO user = new SysUserDO();
             user.setUsername(userRegisterInfoDTO.getUsername());
-            user.setPassword(new BCryptPasswordEncoder().encode(userRegisterInfoDTO.getPassword()));
+            user.setNickName(userRegisterInfoDTO.getUsername());
+            user.setPassword(new BCryptPasswordEncoder().encode(RsaUtils.decrypt(userRegisterInfoDTO.getPassword())));
             user.setEnabled(true);
+            user.setCreateTime(now);
+            user.setUpdateTime(now);
             if (baseMapper.insert(user) == 1) {
                 message = "注册成功";
             } else {

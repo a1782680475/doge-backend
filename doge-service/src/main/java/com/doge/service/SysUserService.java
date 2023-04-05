@@ -22,6 +22,14 @@ public interface SysUserService extends BaseService<SysUserDTO> {
     SysUserDTO getUserByUsername(String username);
 
     /**
+     * 用户新增
+     *
+     * @param userAddDTO 用户新增信息
+     * @return java.lang.String
+     */
+    String addUser(SysUserAddDTO userAddDTO);
+
+    /**
      * 用户注册
      *
      * @param userRegisterInfoDTO 用户注册信息
@@ -117,8 +125,8 @@ public interface SysUserService extends BaseService<SysUserDTO> {
     /**
      * 用户账户绑定邮箱验证
      *
-     * @param email  绑定邮箱
-     * @param token  验证token
+     * @param email 绑定邮箱
+     * @param token 验证token
      * @return java.lang.String
      */
     String bindEmailVerify(String email, String token);
