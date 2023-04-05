@@ -1,27 +1,26 @@
 package com.doge.controller.system;
 
-import com.doge.entity.vo.request.SysUserPasswordInfo;
-import com.doge.entity.vo.request.SysUserQueryVO;
-import com.doge.entity.vo.request.SysUserRoleSettingVO;
+import com.doge.entity.vo.request.*;
 import com.doge.entity.vo.response.AntPageVO;
 import com.doge.entity.vo.response.SimpleResultVO;
 import com.doge.entity.vo.response.SysUserRoleVO;
-import com.doge.service.entity.AntPageDTO;
-import com.doge.service.entity.PageDTO;
-import com.doge.service.entity.SysUserDTO;
+import com.doge.service.entity.*;
 import com.doge.annotation.Log;
 import com.doge.entity.vo.response.SysUserVO;
 import com.doge.service.SysUserRoleService;
 import com.doge.service.SysUserService;
-import com.doge.service.entity.SysUserQueryDTO;
+import com.doge.service.utils.RsaUtils;
 import com.doge.utils.BeanUtils;
 import com.doge.utils.PageUtils;
+import com.doge.utils.SecurityUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -61,6 +60,20 @@ public class SysUserController {
     @ApiOperation(value = "指定用户所属角色列表获取")
     public List<SysUserRoleVO> roleList(Integer id) {
         return BeanUtils.mapAsList(sysUserRoleService.getListByUserId(id),SysUserRoleVO.class);
+    }
+
+    @PreAuthorize("@aps.hasPermission('sys:user:add')")
+    @PostMapping("/add")
+    @ApiOperation(value = "用户新增")
+    @Log(title = "用户新增")
+    public void add(@RequestBody SysUserAddVO sysUserAddVO) {
+        SysUserDTO sysUserDTO = BeanUtils.map(sysUserAddVO, SysUserDTO.class);
+        Date now = new Date();
+        sysUserDTO.setNickName(sysUserDTO.getUsername());
+        sysUserDTO.setPassword(new BCryptPasswordEncoder().encode(RsaUtils.decrypt(sysUserDTO.getPassword())));
+        sysUserDTO.setCreateTime(now);
+        sysUserDTO.setUpdateTime(now);
+        sysUserService.save(sysUserDTO);
     }
 
     @PreAuthorize("@aps.hasPermission('sys:user:enable')")
