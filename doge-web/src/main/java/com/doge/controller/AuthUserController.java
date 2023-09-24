@@ -94,6 +94,10 @@ public class AuthUserController {
         antAuthVO.setRoles(roleVOList.stream().map(role -> role.getRoleCode()).collect(Collectors.toList()));
         int unreadCount = remindService.getUnreadCount(userId) + messageService.getUnreadCount(userId) + bulletinService.getUnreadCount(userId);
         antAuthVO.setUnreadCount(unreadCount);
+        //拉取推送的提醒。
+        //增加消息拉取操作，因为提醒表的target不一定是用户id（比如我发布一篇文章，订阅文章被评论提醒的话，target就是文章id）,所以如果想查询某用户所订阅的提醒仍需联合订阅表查询，但订阅表从业务层面应该只在推送提醒时被用到，所以增加一个消息拉取操作用来直接关联用户与提醒。
+        //这里暂时只处理提醒，公告的话因为没有订阅机制，加之用户特异性不强，当长时间未被拉取，再次拉取时可能会造成大量积压的公告被拉取也会造成性能问题，暂时先通过查询处理。
+        remindService.pullRemind(userId);
         return antAuthVO;
     }
 

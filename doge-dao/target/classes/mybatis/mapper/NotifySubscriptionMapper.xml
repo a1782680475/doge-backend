@@ -3,26 +3,29 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.doge.dao.mapper.NotifySubscriptionMapper">
-    <sql id="columns">
-        t1.id,
-		t1.target_type as targetType,
-        t1.target,
-        t1.action,
-        t1.user_id as userId,
-        t2.id as remindId,
-        t1.create_time as createTime,
-        t1.update_time as updateTime
-    </sql>
-    <!--指定用户订阅提醒获取-->
-    <select id="getSubscriptionByUserId" parameterType="int" resultType="NotifySubscriptionBO">
+    <!--指定用户指定动作订阅信息获取-->
+    <select id="getListByUserIdAndAction" resultType="NotifySubscriptionDO">
         SELECT
-        <include refid="columns"/>
-        FROM notify_subscription t1
-        LEFT JOIN notify_remind t2
-        on t1.target_type = t2.target_type
-        and t1.target = t2.target
-        and t1.action = t2.action
-        WHERE user_id = ${userId}
-        and t1.create_time &lt;= t2.create_time;
+        *
+        FROM notify_subscription
+        WHERE
+        user_id = ${userId}
+        AND target_type = #{targetType}
+        AND target = #{target}
+        AND action = #{action}
+        LIMIT 1;
     </select>
+    <!--指定动作订阅信息获取-->
+    <select id="getListByAction" resultType="NotifySubscriptionDO">
+        SELECT
+        *
+        FROM notify_subscription
+        WHERE
+        target_type = #{targetType}
+        AND target = #{target}
+        AND action = #{action};
+    </select>
+    <delete id="deleteByUserIdAndAction">
+        DELETE FROM notify_subscription WHERE user_id = ${userId} AND action = #{action};
+    </delete>
 </mapper>

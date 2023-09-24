@@ -2,6 +2,7 @@ package com.doge.service.bean;
 
 import lombok.Data;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Map;
 public class RemindProperties {
     private Map<String, String> targetType;
     private Map<String, String> action;
-    private Map<String, String[]> reasonAction;
+    private Map<String, List<String>> reason;
     private Map<String, Notify> template;
 }
 

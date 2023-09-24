@@ -2,12 +2,10 @@ package com.doge.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.doge.dao.entity.NotifyRemindDO;
-import com.doge.dao.entity.NotifySubscriptionConfigDO;
-import com.doge.dao.entity.NotifySubscriptionDO;
-import com.doge.dao.entity.NotifyUserRemindDO;
+import com.doge.dao.entity.*;
 import com.doge.dao.mapper.NotifyRemindMapper;
 import com.doge.dao.mapper.NotifySubscriptionConfigMapper;
 import com.doge.dao.mapper.NotifySubscriptionMapper;
@@ -26,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 消息-提醒服务实现类
@@ -41,6 +40,7 @@ public class RemindServiceImpl implements RemindService {
     private NotifyRemindMapper notifyRemindMapper;
     private NotifyUserRemindMapper notifyUserRemindMapper;
     private RemindProperties remindProperties;
+    private Map<String, List<String>> subscriptionSettingMapping;
     private Map<String, Boolean> subscriptionDefaultSetting;
 
     @Autowired
@@ -50,18 +50,42 @@ public class RemindServiceImpl implements RemindService {
             NotifyRemindMapper notifyRemindMapper,
             NotifyUserRemindMapper notifyUserRemindMapper,
             RemindProperties remindProperties,
+            Map<String, List<String>> subscriptionSettingMapping,
             Map<String, Boolean> subscriptionDefaultSetting
     ) {
         this.notifySubscriptionConfigMapper = notifySubscriptionConfigMapper;
         this.notifySubscriptionMapper = notifySubscriptionMapper;
+        this.notifyRemindMapper = notifyRemindMapper;
         this.notifyUserRemindMapper = notifyUserRemindMapper;
         this.remindProperties = remindProperties;
+        this.subscriptionSettingMapping = subscriptionSettingMapping;
         this.subscriptionDefaultSetting = subscriptionDefaultSetting;
     }
 
     @Override
-    public Boolean subscriptionConfig(Integer userId, String config) {
-        NotifySubscriptionConfigDO notifySubscriptionConfigDO = notifySubscriptionConfigMapper.getListByUserId(userId);
+    public Map<String, Boolean> getSubscriptionConfig(Integer userId) {
+        Map<String, Boolean> subscriptionConfig = new HashMap(100);
+        //查询配置信息
+        NotifySubscriptionConfigDO notifySubscriptionConfigDO = notifySubscriptionConfigMapper.getConfigByUserId(userId);
+        if (notifySubscriptionConfigDO == null) {
+            return subscriptionDefaultSetting;
+        }
+        //迭代默认配置
+        //用户未配置，取默认配置；否则取用户配置
+        Map<String, Boolean> userConfig = (Map<String, Boolean>) JSON.parse(notifySubscriptionConfigDO.getConfig());
+        for (String key : subscriptionDefaultSetting.keySet()) {
+            if (userConfig.containsKey(key)) {
+                subscriptionConfig.put(key, userConfig.get(key));
+            } else {
+                subscriptionConfig.put(key, subscriptionDefaultSetting.get(key));
+            }
+        }
+        return subscriptionConfig;
+    }
+
+    @Override
+    public Boolean saveSubscriptionConfig(Integer userId, String config) {
+        NotifySubscriptionConfigDO notifySubscriptionConfigDO = notifySubscriptionConfigMapper.getConfigByUserId(userId);
         Date now = new Date();
         if (notifySubscriptionConfigDO != null) {
             notifySubscriptionConfigDO.setConfig(config);
@@ -79,21 +103,68 @@ public class RemindServiceImpl implements RemindService {
     }
 
     @Override
-    public Boolean subscribe(Integer userId, String targetType, Integer target, String reason) {
-        String[] shouldSubscribeActions = queryShouldSubscribeActions(userId, reason);
-        //将所有该订阅动作每个新建一个订阅记录
+    public Boolean setSubscriptionConfig(int userId, String key, Boolean isEnabled) {
+        String configJson;
+        List<String> actionList = subscriptionSettingMapping.get(key);
+        NotifySubscriptionConfigDO notifySubscriptionConfigDO = notifySubscriptionConfigMapper.getConfigByUserId(userId);
         Date now = new Date();
-        for (String action : shouldSubscribeActions) {
-            NotifySubscriptionDO notifySubscriptionDO = new NotifySubscriptionDO();
-            notifySubscriptionDO.setTargetType(targetType);
-            notifySubscriptionDO.setTarget(target);
-            notifySubscriptionDO.setAction(action);
-            notifySubscriptionDO.setUserId(userId);
-            notifySubscriptionDO.setCreateTime(now);
-            notifySubscriptionDO.setUpdateTime(now);
-            notifySubscriptionMapper.insert(notifySubscriptionDO);
+        if (notifySubscriptionConfigDO != null) {
+            Map<String, Boolean> userConfig = (Map<String, Boolean>) JSON.parse(notifySubscriptionConfigDO.getConfig());
+            Boolean originEnabled = userConfig.get(key);
+            userConfig.put(key, isEnabled);
+            actionList.forEach(action -> userConfig.put(action, isEnabled));
+            configJson = JSON.toJSONString(userConfig);
+            notifySubscriptionConfigDO.setConfig(configJson);
+            notifySubscriptionConfigDO.setUpdateTime(now);
+            notifySubscriptionConfigMapper.updateById(notifySubscriptionConfigDO);
+            //取消订阅
+            if (originEnabled && !isEnabled) {
+                actionList.forEach(action -> {
+                    unSubscribe(userId, action);
+                });
+            }
+        } else {
+            Map<String, Boolean> configMap = new HashMap<>(100);
+            subscriptionDefaultSetting.forEach((k, v) -> {
+                configMap.put(k, v);
+            });
+            configMap.put(key, isEnabled);
+            actionList.forEach(action -> configMap.put(action, isEnabled));
+            configJson = JSON.toJSONString(configMap);
+            notifySubscriptionConfigDO = new NotifySubscriptionConfigDO();
+            notifySubscriptionConfigDO.setUserId(userId);
+            notifySubscriptionConfigDO.setConfig(configJson);
+            notifySubscriptionConfigDO.setCreateTime(now);
+            notifySubscriptionConfigDO.setUpdateTime(now);
+            notifySubscriptionConfigMapper.insert(notifySubscriptionConfigDO);
         }
         return true;
+    }
+
+    @Override
+    public Boolean subscribe(Integer userId, String targetType, Integer target, String reason) {
+        List<String> shouldSubscribeActionList = queryShouldSubscribeActions(userId, reason);
+        //将所有该订阅动作每个新建一个订阅记录
+        Date now = new Date();
+        for (String action : shouldSubscribeActionList) {
+            //检查订阅记录，避免重复订阅
+            NotifySubscriptionDO notifySubscriptionDO = notifySubscriptionMapper.getListByUserIdAndAction(userId, targetType, target, action);
+            if (notifySubscriptionDO == null) {
+                notifySubscriptionDO = new NotifySubscriptionDO();
+                notifySubscriptionDO.setTargetType(targetType);
+                notifySubscriptionDO.setTarget(target);
+                notifySubscriptionDO.setAction(action);
+                notifySubscriptionDO.setUserId(userId);
+                notifySubscriptionDO.setCreateTime(now);
+                notifySubscriptionDO.setUpdateTime(now);
+                notifySubscriptionMapper.insert(notifySubscriptionDO);
+            }
+        }
+        return true;
+    }
+
+    public Boolean unSubscribe(Integer userId, String action) {
+        return notifySubscriptionMapper.deleteByUserIdAndAction(userId, action);
     }
 
     /**
@@ -103,25 +174,43 @@ public class RemindServiceImpl implements RemindService {
      * @param reason 原因
      * @return java.lang.String[]
      */
-    private String[] queryShouldSubscribeActions(Integer userId, String reason) {
+    private List<String> queryShouldSubscribeActions(Integer userId, String reason) {
         //查询配置信息
-        NotifySubscriptionConfigDO notifySubscriptionConfigDO = notifySubscriptionConfigMapper.getListByUserId(userId);
-        String[] shouldSubscribeActions;
+        NotifySubscriptionConfigDO notifySubscriptionConfigDO = notifySubscriptionConfigMapper.getConfigByUserId(userId);
+        List<String> shouldSubscribeActionList;
         //查询对应动作组
-        String[] actions = remindProperties.getReasonAction().get(reason);
-        //用户配置为空，取默认配置
+        var actions = remindProperties.getReason().get(reason);
         if (notifySubscriptionConfigDO == null) {
-            shouldSubscribeActions = Arrays.stream(actions).filter(action -> subscriptionDefaultSetting.get(action)).toArray(String[]::new);
+            shouldSubscribeActionList = actions.stream().filter(action -> subscriptionDefaultSetting.get(action)).collect(Collectors.toList());
         } else {
-            //用户配置不为空，取用户配置
+            shouldSubscribeActionList = new ArrayList<>();
+            //迭代默认配置
+            //用户未配置，取默认配置；否则取用户配置
             Map<String, Boolean> userConfig = (Map<String, Boolean>) JSON.parse(notifySubscriptionConfigDO.getConfig());
-            shouldSubscribeActions = Arrays.stream(actions).filter(action -> userConfig.get(action)).toArray(String[]::new);
+            for (String action : actions) {
+                if (userConfig.containsKey(action)) {
+                    if (userConfig.get(action)) {
+                        shouldSubscribeActionList.add(action);
+                    }
+                } else {
+                    if (subscriptionDefaultSetting.containsKey(action)) {
+                        if (subscriptionDefaultSetting.get(action)) {
+                            shouldSubscribeActionList.add(action);
+                        }
+                    }
+                }
+            }
         }
-        return shouldSubscribeActions;
+        return shouldSubscribeActionList;
     }
 
     @Override
-    public Boolean createRemind(String targetType, Integer target, String action, Integer sender) {
+    public Boolean publish(String targetType, Integer target, String action, Integer sender) {
+        //检查是否存在订阅者
+        List<NotifySubscriptionDO> notifySubscriptionList = notifySubscriptionMapper.getListByAction(targetType, target, action);
+        if (notifySubscriptionList.isEmpty()) {
+            return false;
+        }
         NotifyRemindDO notifyRemindDO = new NotifyRemindDO();
         Date now = new Date();
         notifyRemindDO.setTargetType(targetType);
@@ -136,8 +225,8 @@ public class RemindServiceImpl implements RemindService {
 
     @Override
     public Boolean pullRemind(Integer userId) {
-        //用户订阅信息获取
-        List<NotifySubscriptionBO> notifySubscriptionList = notifySubscriptionMapper.getListByUserId(userId);
+        //用户未拉取的推送提醒获取
+        List<NotifySubscriptionBO> notifySubscriptionList = notifyRemindMapper.getNotPullListByUserId(userId);
         //写入用户提醒
         for (NotifySubscriptionBO notifySubscription : notifySubscriptionList) {
             NotifyUserRemindDO notifyUserRemindDO = new NotifyUserRemindDO();
@@ -203,7 +292,7 @@ public class RemindServiceImpl implements RemindService {
                 content = content.replace("${sender}", notifySubscription.getSender());
             }
             if (notifySubscription.getSendTime() != null) {
-                content = content.replace("${sendTime}", DateUtil.format(notifySubscription.getSendTime(), "yyyy-MM-dd dd:mm:ss"));
+                content = content.replace("${sendTime}", DateUtil.format(notifySubscription.getSendTime(), "yyyy-MM-dd HH:mm:ss"));
             }
             notifySubscription.setTitle(title);
             notifySubscription.setContent(content);

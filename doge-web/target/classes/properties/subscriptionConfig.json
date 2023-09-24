@@ -1,0 +1,11 @@
+{
+  "subscriptionSettingMapping": {
+    "account_password_change": [
+      "password_reset",
+      "password_change"
+    ]
+  },
+  "defaultSubscription": {
+    "account_password_change": true
+  }
+}

@@ -2,6 +2,7 @@ package com.doge.dao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.doge.dao.entity.NotifySubscriptionConfigDO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -18,5 +19,6 @@ public interface NotifySubscriptionConfigMapper extends BaseMapper<NotifySubscri
      * @param userId 用户id
      * @return com.doge.dao.entity.NotifySubscriptionConfigDO
      */
-    NotifySubscriptionConfigDO getListByUserId(Integer userId);
+    NotifySubscriptionConfigDO getConfigByUserId(Integer userId);
+
 }

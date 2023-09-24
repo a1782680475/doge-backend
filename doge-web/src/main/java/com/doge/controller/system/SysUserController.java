@@ -4,6 +4,7 @@ import com.doge.entity.vo.request.*;
 import com.doge.entity.vo.response.AntPageVO;
 import com.doge.entity.vo.response.SimpleResultVO;
 import com.doge.entity.vo.response.SysUserRoleVO;
+import com.doge.service.NoticeService;
 import com.doge.service.entity.*;
 import com.doge.annotation.Log;
 import com.doge.entity.vo.response.SysUserVO;
@@ -36,14 +37,17 @@ import java.util.Map;
 public class SysUserController {
     private SysUserService sysUserService;
     private SysUserRoleService sysUserRoleService;
+    private NoticeService noticeService;
+
     SysUserController() {
 
     }
 
     @Autowired
-    SysUserController(SysUserService userService,SysUserRoleService sysUserRoleService) {
+    SysUserController(SysUserService userService, SysUserRoleService sysUserRoleService, NoticeService noticeService) {
         this.sysUserService = userService;
         this.sysUserRoleService = sysUserRoleService;
+        this.noticeService = noticeService;
     }
 
     @PreAuthorize("@aps.hasPermission('sys:user')")
@@ -51,15 +55,15 @@ public class SysUserController {
     @ApiOperation(value = "用户列表获取")
     public AntPageVO pageList(SysUserQueryVO sysUserQueryVO) {
         PageDTO pageDTO = PageUtils.createPageDTO(sysUserQueryVO);
-        Map<String,String> sorter = PageUtils.createSorter(sysUserQueryVO);
-        AntPageDTO<SysUserDTO> antPageDTO= sysUserService.getPageList(pageDTO,BeanUtils.map(sysUserQueryVO, SysUserQueryDTO.class),sorter);
+        Map<String, String> sorter = PageUtils.createSorter(sysUserQueryVO);
+        AntPageDTO<SysUserDTO> antPageDTO = sysUserService.getPageList(pageDTO, BeanUtils.map(sysUserQueryVO, SysUserQueryDTO.class), sorter);
         return new AntPageVO().build(antPageDTO, SysUserVO.class);
     }
 
     @GetMapping("/roleList")
     @ApiOperation(value = "指定用户所属角色列表获取")
     public List<SysUserRoleVO> roleList(Integer id) {
-        return BeanUtils.mapAsList(sysUserRoleService.getListByUserId(id),SysUserRoleVO.class);
+        return BeanUtils.mapAsList(sysUserRoleService.getListByUserId(id), SysUserRoleVO.class);
     }
 
     @PreAuthorize("@aps.hasPermission('sys:user:add')")
@@ -98,7 +102,7 @@ public class SysUserController {
     @ApiOperation(value = "账户角色分配")
     @Log(title = "账户角色分配")
     public void settingRole(@RequestBody SysUserRoleSettingVO sysUserRoleSettingVO) {
-        sysUserService.settingRoles(sysUserRoleSettingVO.getId(),sysUserRoleSettingVO.getRoleIds());
+        sysUserService.settingRoles(sysUserRoleSettingVO.getId(), sysUserRoleSettingVO.getRoleIds());
     }
 
     @PreAuthorize("@aps.hasPermission('sys:user:enable')")
@@ -124,7 +128,7 @@ public class SysUserController {
     public SimpleResultVO resetPassword(@RequestBody SysUserPasswordInfo sysUserPasswordInfo) {
         SimpleResultVO resultVO = new SimpleResultVO();
         int userId = sysUserPasswordInfo.getId();
-        String errorMessage = sysUserService.changePassword(userId, sysUserPasswordInfo.getPassword());
+        String errorMessage = sysUserService.changePassword(userId, sysUserPasswordInfo.getPassword(), PasswordChangeTypeEnum.RESET);
         if (errorMessage != null) {
             resultVO.isSuccess = false;
             resultVO.errorMessage = errorMessage;

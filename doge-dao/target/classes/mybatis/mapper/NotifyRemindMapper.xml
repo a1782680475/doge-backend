@@ -4,12 +4,40 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.doge.dao.mapper.NotifyRemindMapper">
     <sql id="columns">
-        id,
-		target_type as targetType,
-        target,
-        action,
-        sender,
-        create_time as createTime,
-        update_time as updateTime
+        t1.id,
+        t1.target_type as targetType,
+        t1.target,
+        t1.action,
+        t1.user_id as userId,
+        t2.id as remindId,
+        t2.create_time as createTime,
+        t2.update_time as updateTime
     </sql>
+    <!--指定用户订阅提醒获取-->
+    <select id="getListByUserId" parameterType="int" resultType="NotifySubscriptionBO">
+        SELECT
+        <include refid="columns"/>
+        FROM notify_subscription t1
+        LEFT JOIN notify_remind t2
+        ON t1.target_type = t2.target_type
+        AND t1.target = t2.target
+        AND t1.action = t2.action
+        WHERE user_id = ${userId}
+        AND t1.create_time &lt;= t2.create_time;
+    </select>
+    <!--指定用户未拉取订阅提醒获取-->
+    <select id="getNotPullListByUserId" parameterType="int" resultType="NotifySubscriptionBO">
+        SELECT
+        <include refid="columns"/>
+        FROM notify_subscription t1
+        LEFT JOIN notify_remind t2
+        ON t1.target_type = t2.target_type
+        AND t1.target = t2.target
+        AND t1.action = t2.action
+        LEFT JOIN notify_user_remind t3
+        ON t3.remind_id = t2.id AND t3.user_id = t1.user_id
+        WHERE t1.user_id = ${userId}
+        AND t1.create_time &lt;= t2.create_time
+        AND t3.id IS NULL;
+    </select>
 </mapper>

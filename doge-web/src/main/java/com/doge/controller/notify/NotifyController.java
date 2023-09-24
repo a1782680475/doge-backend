@@ -1,9 +1,7 @@
 package com.doge.controller.notify;
 
-import com.doge.entity.vo.response.AntPageVO;
-import com.doge.entity.vo.response.BulletinVO;
-import com.doge.entity.vo.response.MessageVO;
-import com.doge.entity.vo.response.RemindVO;
+import com.doge.entity.vo.request.SubscriptionConfigSettingVO;
+import com.doge.entity.vo.response.*;
 import com.doge.service.entity.*;
 import com.doge.entity.PageQuery;
 import com.doge.entity.vo.request.UnreadNoticeQueryVO;
@@ -20,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 消息业务
@@ -37,7 +36,7 @@ public class NotifyController {
     private BulletinService bulletinService;
 
     @Autowired
-    NotifyController(RemindService remindService, MessageService messageService,BulletinService bulletinService) {
+    NotifyController(RemindService remindService, MessageService messageService, BulletinService bulletinService) {
         this.remindService = remindService;
         this.messageService = messageService;
         this.bulletinService = bulletinService;
@@ -48,7 +47,7 @@ public class NotifyController {
     public AntPageVO remindPageList(PageQuery pageQuery) {
         int userId = SecurityUtils.getUserId();
         PageDTO pageDTO = PageUtils.createPageDTO(pageQuery);
-        AntPageDTO<NotifySubscriptionDTO> antPageDTO= remindService.getListByPage(pageDTO,userId);
+        AntPageDTO<NotifySubscriptionDTO> antPageDTO = remindService.getListByPage(pageDTO, userId);
         return new AntPageVO().build(antPageDTO, RemindVO.class);
     }
 
@@ -86,12 +85,12 @@ public class NotifyController {
     public AntPageVO messagePageList(PageQuery pageQuery) {
         int userId = SecurityUtils.getUserId();
         PageDTO pageDTO = PageUtils.createPageDTO(pageQuery);
-        AntPageDTO<NotifyMessageDTO> antPageDTO= messageService.getListByPage(pageDTO,userId);
+        AntPageDTO<NotifyMessageDTO> antPageDTO = messageService.getListByPage(pageDTO, userId);
         return new AntPageVO().build(antPageDTO, MessageVO.class);
     }
 
     @GetMapping("/message/unreadList")
-    @ApiOperation(value = "指定数目的未读提醒列表获取")
+    @ApiOperation(value = "指定数目的未读私信列表获取")
     public List<MessageVO> unreadMessageList(UnreadNoticeQueryVO unreadNoticeQuery) {
         int userId = SecurityUtils.getUserId();
         UnreadNoticeQueryDTO unreadNoticeQueryDTO = BeanUtils.map(unreadNoticeQuery, UnreadNoticeQueryDTO.class);
@@ -124,7 +123,7 @@ public class NotifyController {
     public AntPageVO bulletinPageList(PageQuery pageQuery) {
         int userId = SecurityUtils.getUserId();
         PageDTO pageDTO = PageUtils.createPageDTO(pageQuery);
-        AntPageDTO<NotifyBulletinDTO> antPageDTO= bulletinService.getListByPage(pageDTO,userId);
+        AntPageDTO<NotifyBulletinDTO> antPageDTO = bulletinService.getListByPage(pageDTO, userId);
         return new AntPageVO().build(antPageDTO, BulletinVO.class);
     }
 
@@ -155,5 +154,19 @@ public class NotifyController {
     public Boolean clearBulletinUnread() {
         int userId = SecurityUtils.getUserId();
         return bulletinService.clearUnread(userId);
+    }
+
+    @GetMapping(value = "/subscriptionConfig")
+    @ApiOperation("用户消息订阅配置获取")
+    public Map<String, Boolean> geNotifySubscriptionConfig() {
+        int userId = SecurityUtils.getUserId();
+        return remindService.getSubscriptionConfig(userId);
+    }
+
+    @PutMapping(value = "/subscriptionConfig")
+    @ApiOperation("用户消息订阅配置修改")
+    public Boolean changeSubscriptionConfig(@RequestBody  SubscriptionConfigSettingVO subscriptionConfigSetting) {
+        int userId = SecurityUtils.getUserId();
+        return remindService.setSubscriptionConfig(userId, subscriptionConfigSetting.getKey(), subscriptionConfigSetting.getIsEnabled());
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,7 +26,7 @@ public class RemindConfiguration {
         RemindProperties remindProperties = new RemindProperties();
         remindProperties.setTargetType((Map<String, String>) map.get("targetType"));
         remindProperties.setAction((Map<String, String>) map.get("action"));
-        remindProperties.setReasonAction((Map<String, String[]>) map.get("reasonAction"));
+        remindProperties.setReason((Map<String, List<String>>) map.get("reason"));
         Map<String, Map<String, String>> templateMap = (Map<String, Map<String, String>>) map.get("template");
         Map<String, Notify> template = new LinkedHashMap<>();
         for (String key : templateMap.keySet()) {

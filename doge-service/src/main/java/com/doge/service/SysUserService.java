@@ -170,9 +170,10 @@ public interface SysUserService extends BaseService<SysUserDTO> {
      *
      * @param userId   用户id
      * @param password 密码
+     * @param passwordChangeType 密码修改类型
      * @return java.lang.String
      */
-    String changePassword(int userId, String password);
+    String changePassword(int userId, String password,PasswordChangeTypeEnum passwordChangeType);
 
     /**
      * 用户账户密码找回邮箱验证码验证

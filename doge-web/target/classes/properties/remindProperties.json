@@ -6,20 +6,28 @@
     },
     "action": {
       "password_reset": "密码重置",
+      "password_change": "密码修改",
       "service_abnormal": "服务异常"
     },
-    "reasonAction": {
-      "password_reset": [
+    "reason": {
+      "account_password_reset": [
         "password_reset"
+      ],
+      "account_password_change": [
+        "password_change"
       ],
       "service_abnormal": [
         "service_abnormal"
       ]
     },
-    "template":{
+    "template": {
       "password_reset": {
         "title": "密码重置通知",
         "content": "您的密码于${sendTime}已重置，若非本人操作，请立刻联系管理员。"
+      },
+      "password_change": {
+        "title": "密码修改通知",
+        "content": "您的密码于${sendTime}已修改，若非本人操作，请立刻联系管理员。"
       },
       "service_abnormal": {
         "title": "服务异常通知",

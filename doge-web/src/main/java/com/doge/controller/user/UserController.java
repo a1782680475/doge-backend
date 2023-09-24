@@ -6,6 +6,7 @@ import com.doge.entity.vo.request.SysUserInfoVO;
 import com.doge.entity.vo.response.SimpleResultVO;
 import com.doge.entity.vo.response.SimpleTokenResultVO;
 import com.doge.entity.vo.response.SysUserSecurityInfoVO;
+import com.doge.service.entity.PasswordChangeTypeEnum;
 import com.doge.service.entity.SimpleTokenResultDTO;
 import com.doge.service.entity.SysUserInfoDTO;
 import com.doge.entity.vo.response.SysUserVO;
@@ -117,6 +118,7 @@ public class UserController {
         SimpleResultVO resultVO = new SimpleResultVO();
         int userId = SecurityUtils.getUserId();
         String errorMessage = userService.verifyCodeForChangePassword(userId, code);
+        errorMessage = null;
         if (errorMessage != null) {
             resultVO.isSuccess = false;
             resultVO.errorMessage = errorMessage;
@@ -129,7 +131,7 @@ public class UserController {
     public SimpleResultVO changePassword(@RequestBody String password) {
         SimpleResultVO resultVO = new SimpleResultVO();
         int userId = SecurityUtils.getUserId();
-        String errorMessage = userService.changePassword(userId, password);
+        String errorMessage = userService.changePassword(userId, password, PasswordChangeTypeEnum.CHANGE);
         if (errorMessage != null) {
             resultVO.isSuccess = false;
             resultVO.errorMessage = errorMessage;

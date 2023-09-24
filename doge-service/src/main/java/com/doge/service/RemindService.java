@@ -1,10 +1,12 @@
 package com.doge.service;
+
 import com.doge.service.entity.AntPageDTO;
 import com.doge.service.entity.NotifySubscriptionDTO;
 import com.doge.service.entity.PageDTO;
 import com.doge.service.entity.UnreadNoticeQueryDTO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 消息-提醒服务
@@ -13,8 +15,17 @@ import java.util.List;
  * @date 2021-10-11 08:45
  */
 public interface RemindService {
+
     /**
-     * 订阅配置保存
+     * 订阅配置获取
+     *
+     * @param userId 用户Id
+     * @return java.util.Map<java.lang.String, java.lang.Boolean>
+     */
+    Map<String, Boolean> getSubscriptionConfig(Integer userId);
+
+    /**
+     * 订阅配置保存（所有）
      *
      * @param userId 用户id
      * @param config 配置（JSON格式，如：
@@ -31,7 +42,17 @@ public interface RemindService {
      *               }）
      * @return java.lang.Boolean
      */
-    Boolean subscriptionConfig(Integer userId, String config);
+    Boolean saveSubscriptionConfig(Integer userId, String config);
+
+    /**
+     * 订阅配置保存（单个）
+     *
+     * @param userId   用户Id
+     * @param key      配置key
+     * @param isEnabled 是否启用
+     * @return java.lang.Boolean
+     */
+    Boolean setSubscriptionConfig(int userId, String key, Boolean isEnabled);
 
     /**
      * 订阅
@@ -45,7 +66,7 @@ public interface RemindService {
     Boolean subscribe(Integer userId, String targetType, Integer target, String reason);
 
     /**
-     * 提醒创建
+     * 提醒推送
      *
      * @param targetType 目标类型
      * @param target     目标
@@ -53,7 +74,7 @@ public interface RemindService {
      * @param sender     发送者
      * @return java.lang.Boolean
      */
-    Boolean createRemind(String targetType, Integer target, String action, Integer sender);
+    Boolean publish(String targetType, Integer target, String action, Integer sender);
 
     /**
      * 提醒拉取
@@ -66,8 +87,8 @@ public interface RemindService {
     /**
      * 分页获取用户提醒
      *
-     * @param pageDTO   分页
-     * @param userId 用户id
+     * @param pageDTO 分页
+     * @param userId  用户id
      * @return com.doge.service.entity.AntPageDTO<com.doge.service.entity.NotifySubscriptionDTO>
      */
     AntPageDTO<NotifySubscriptionDTO> getListByPage(PageDTO pageDTO, Integer userId);
@@ -76,7 +97,7 @@ public interface RemindService {
      * 获取用户未读提醒
      *
      * @param unreadNoticeQuery 提醒查询信息
-     * @param userId 用户id
+     * @param userId            用户id
      * @return java.util.List<com.doge.service.entity.NotifySubscriptionDTO>
      */
     List<NotifySubscriptionDTO> getUnreadRemindList(UnreadNoticeQueryDTO unreadNoticeQuery, int userId);
@@ -92,7 +113,7 @@ public interface RemindService {
     /**
      * 将未读提醒标记为已读
      *
-     * @param id 提醒id
+     * @param id     提醒id
      * @param userId 用户id
      * @return java.lang.Integer
      */
