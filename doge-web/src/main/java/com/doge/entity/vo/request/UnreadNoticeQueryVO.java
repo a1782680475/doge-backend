@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * 未读消息查询信息
+ * 未读通知查询信息
  *
  * @author shixinyu
  * @date 2023/2/12 13:45

@@ -1,7 +1,7 @@
 package com.doge.service.impl;
 
 import com.doge.service.NoticeService;
-import com.doge.service.RemindService;
+import com.doge.service.NoticeRemindService;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 @NoArgsConstructor
 public class NoticeServiceImpl implements NoticeService {
-    private RemindService remindService;
+    private NoticeRemindService remindService;
     private static final String TARGET_TYPE_ACCOUNT = "account";
     private static final String ACTION_PASSWORD_RESET = "password_reset";
     private static final String REASON_PASSWORD_RESET = "account_password_reset";
@@ -25,7 +25,7 @@ public class NoticeServiceImpl implements NoticeService {
     private static final int SENDER = 0;
 
     @Autowired
-    NoticeServiceImpl(RemindService remindService) {
+    NoticeServiceImpl(NoticeRemindService remindService) {
         this.remindService = remindService;
     }
 

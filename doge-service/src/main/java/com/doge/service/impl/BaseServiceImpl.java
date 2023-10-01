@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.*;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.doge.service.BaseService;
+import com.doge.service.entity.BulletinDTO;
 import com.doge.utils.BeanUtils;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.logging.Log;
@@ -59,7 +60,6 @@ public class BaseServiceImpl<M extends BaseMapper<S>, S, T> implements BaseServi
      */
     @Override
     public T getById(Serializable id) {
-        var sa = getBaseMapper().selectById(id);
         return BeanUtils.map(getBaseMapper().selectById(id), getServiceEntityClass());
     }
 
@@ -248,4 +248,5 @@ public class BaseServiceImpl<M extends BaseMapper<S>, S, T> implements BaseServi
     public M getBaseMapper() {
         return baseMapper;
     }
+
 }

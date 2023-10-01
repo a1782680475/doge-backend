@@ -13,7 +13,7 @@ import java.util.List;
  * @author shixinyu
  * @date 2021/12/9 20:38
  */
-public interface MessageService {
+public interface NoticeMessageService {
     /**
      * 分页获取用户私信
      *

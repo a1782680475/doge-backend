@@ -1,5 +1,6 @@
 package com.doge.entity.vo.response;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -21,8 +22,8 @@ public class BulletinVO {
     private String title;
     @ApiModelProperty(value="消息内容",position = 3)
     private String content;
-    @ApiModelProperty(value="发送者",position = 4)
-    private String sender;
+    @ApiModelProperty(value="创建者",position = 4)
+    private String createBy;
     @ApiModelProperty(value="创建时间",position = 5)
     private Date createTime;
 }

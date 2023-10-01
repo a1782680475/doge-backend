@@ -17,7 +17,7 @@ import java.util.List;
  */
 public interface NotifyUserMessageMapper extends BaseMapper<NotifyUserMessageDO> {
     /**
-     * 分页获取用户私信消息
+     * 分页获取用户私信
      *
      * @param page   分页
      * @param userId 用户id

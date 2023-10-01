@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * 公告VO
+ * 消息-公告VO
  *
  * @author shixinyu
  * @date 2021/12/29 16:01

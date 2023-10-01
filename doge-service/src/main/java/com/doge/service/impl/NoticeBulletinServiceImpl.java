@@ -1,5 +1,6 @@
 package com.doge.service.impl;
 
+import cn.hutool.http.HtmlUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.doge.dao.entity.NotifyUserBulletinDO;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 用户公告服务实现类
@@ -45,6 +47,10 @@ public class NoticeBulletinServiceImpl implements NoticeBulletinService {
     @Override
     public List<NotifyBulletinDTO> getUnreadBulletinList(UnreadNoticeQueryDTO unreadNoticeQuery, int userId) {
         List<NotifyBulletinDTO> notifyBulletinList = BeanUtils.mapAsList(notifyUserBulletinMapper.selectUnreadListByCount(unreadNoticeQuery.getCount(), userId), NotifyBulletinDTO.class);
+        notifyBulletinList = notifyBulletinList.stream().map(record -> {
+            record.setContent(HtmlUtil.cleanHtmlTag(record.getContent()));
+            return record;
+        }).collect(Collectors.toList());
         return notifyBulletinList;
     }
 
@@ -84,7 +90,7 @@ public class NoticeBulletinServiceImpl implements NoticeBulletinService {
             userBulletin.setUpdateTime(now);
             userBulletinList.add(userBulletin);
         }
-        if(notifyUserBulletinList.size()>0) {
+        if (notifyUserBulletinList.size() > 0) {
             notifyUserBulletinMapper.insertBatchSomeColumn(userBulletinList);
         }
         return true;

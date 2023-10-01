@@ -14,7 +14,7 @@ import java.util.Map;
  * @author shixinyu
  * @date 2021-10-11 08:45
  */
-public interface RemindService {
+public interface NoticeRemindService {
 
     /**
      * 订阅配置获取

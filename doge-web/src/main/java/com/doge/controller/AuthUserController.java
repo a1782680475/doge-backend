@@ -6,14 +6,14 @@ import com.doge.entity.vo.request.FindPasswordVerifyCodeVO;
 import com.doge.entity.vo.request.SysUserBindEmailInfoVO;
 import com.doge.entity.vo.request.SysUserRegisterInfoVO;
 import com.doge.entity.vo.response.*;
+import com.doge.service.NoticeBulletinService;
 import com.doge.service.common.MessageResult;
 import com.doge.service.entity.SendVerificationCodeForPasswordResultDTO;
 import com.doge.service.entity.SimpleTokenResultDTO;
 import com.doge.service.entity.SysUserRegisterInfoDTO;
 import com.wf.captcha.ArithmeticCaptcha;
-import com.doge.service.BulletinService;
-import com.doge.service.MessageService;
-import com.doge.service.RemindService;
+import com.doge.service.NoticeMessageService;
+import com.doge.service.NoticeRemindService;
 import com.doge.service.SysUserService;
 import com.doge.utils.AntMenuUtils;
 import com.doge.utils.BeanUtils;
@@ -40,9 +40,9 @@ import java.util.stream.Collectors;
 @Api(value = "AuthUserController", tags = "用户登录注册等相关业务")
 public class AuthUserController {
     private SysUserService userService;
-    private RemindService remindService;
-    private MessageService messageService;
-    private BulletinService bulletinService;
+    private NoticeRemindService remindService;
+    private NoticeMessageService messageService;
+    private NoticeBulletinService bulletinService;
     private RedisTemplate redisTemplate;
 
     AuthUserController() {
@@ -50,7 +50,7 @@ public class AuthUserController {
     }
 
     @Autowired
-    AuthUserController(SysUserService userService, RedisTemplate redisTemplate, RemindService remindService, MessageService messageService,BulletinService bulletinService) {
+    AuthUserController(SysUserService userService, RedisTemplate redisTemplate, NoticeRemindService remindService, NoticeMessageService messageService, NoticeBulletinService bulletinService) {
         this.userService = userService;
         this.remindService = remindService;
         this.messageService = messageService;
@@ -130,7 +130,7 @@ public class AuthUserController {
         String result = captcha.text();
         String uuid = UUID.randomUUID().toString().replace("-", "");
         // 保存到redis
-        redisTemplate.opsForValue().set("doge:account:captcha_"+uuid, result, 60 * 5 * 1000L, TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set("doge:account:captcha_" + uuid, result, 60 * 5 * 1000L, TimeUnit.MILLISECONDS);
         // 验证码信息
         return new ImgCaptchaVO(uuid, captcha.toBase64());
     }
@@ -170,7 +170,7 @@ public class AuthUserController {
         if (resultDTO.getErrorMessage() != null) {
             resultVO.isSuccess = false;
             resultVO.errorMessage = resultDTO.getErrorMessage();
-        }else {
+        } else {
             resultVO.setToken(resultDTO.getToken());
         }
         return resultVO;

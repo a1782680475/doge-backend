@@ -3,11 +3,8 @@ package com.doge.controller.message;
 import com.doge.annotation.Log;
 import com.doge.entity.PageQuery;
 import com.doge.entity.vo.request.MsgBulletinAddVO;
-import com.doge.entity.vo.request.SysUserAddVO;
 import com.doge.entity.vo.response.AntPageVO;
 import com.doge.entity.vo.response.BulletinVO;
-import com.doge.entity.vo.response.SimpleResultVO;
-import com.doge.entity.vo.response.SysRoleVO;
 import com.doge.service.BulletinService;
 import com.doge.service.entity.*;
 import com.doge.utils.BeanUtils;
@@ -27,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
  * @date 2023/9/27 17:03
  */
 @RestController
-@RequestMapping("/bulletin")
+@RequestMapping("/msg/bulletin")
 @Api(value = "BulletinController", tags = "公告管理")
 @NoArgsConstructor
 public class BulletinController {
@@ -39,7 +36,7 @@ public class BulletinController {
     @GetMapping("/pageList")
     @ApiOperation(value = "公告列表获取（分页）")
     @PreAuthorize("@aps.hasPermission('msg:bulletin')")
-    public AntPageVO bulletinPageList(PageQuery pageQuery) {
+    public AntPageVO pageList(PageQuery pageQuery) {
         int userId = SecurityUtils.getUserId();
         PageDTO pageDTO = PageUtils.createPageDTO(pageQuery);
         AntPageDTO<BulletinDTO> antPageDTO = bulletinService.getListByPage(pageDTO, userId);
@@ -48,11 +45,11 @@ public class BulletinController {
     @GetMapping("/{id}")
     @ApiOperation(value = "指定公告获取")
     @PreAuthorize("@aps.hasPermission('msg:bulletin')")
-    public BulletinVO getBulletinById(@PathVariable Integer id){
+    public BulletinVO getById(@PathVariable Integer id){
         return BeanUtils.map(bulletinService.getById(id),BulletinVO.class);
     }
 
-    @PostMapping("/bulletin/add")
+    @PostMapping("/add")
     @ApiOperation(value = "公告新增")
     @Log(title = "公告新增")
     @PreAuthorize("@aps.hasPermission('msg:bulletin:add')")
@@ -60,5 +57,13 @@ public class BulletinController {
         MsgBulletinAddDTO msgBulletinAddDTO = BeanUtils.map(msgBulletinAddVO, MsgBulletinAddDTO.class);
         msgBulletinAddDTO.setSender(SecurityUtils.getUserId());
         bulletinService.addBulletin(msgBulletinAddDTO);
+    }
+
+    @PreAuthorize("@aps.hasPermission('msg:bulletin:delete')")
+    @DeleteMapping("/{id}")
+    @ApiOperation(value = "公告删除")
+    @Log(title = "公告删除")
+    public void delete(@PathVariable Integer id) {
+        bulletinService.removeById(id);
     }
 }
