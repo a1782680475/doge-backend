@@ -2,7 +2,6 @@ package com.doge.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.doge.dao.entity.*;
@@ -14,7 +13,7 @@ import com.doge.dao.queryentity.NotifySubscriptionBO;
 import com.doge.service.entity.AntPageDTO;
 import com.doge.service.entity.NotifySubscriptionDTO;
 import com.doge.service.entity.PageDTO;
-import com.doge.service.RemindService;
+import com.doge.service.NoticeRemindService;
 import com.doge.service.bean.Notify;
 import com.doge.service.bean.RemindProperties;
 import com.doge.service.entity.UnreadNoticeQueryDTO;
@@ -34,7 +33,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @NoArgsConstructor
-public class RemindServiceImpl implements RemindService {
+public class NoticeRemindServiceImpl implements NoticeRemindService {
     private NotifySubscriptionConfigMapper notifySubscriptionConfigMapper;
     private NotifySubscriptionMapper notifySubscriptionMapper;
     private NotifyRemindMapper notifyRemindMapper;
@@ -44,7 +43,7 @@ public class RemindServiceImpl implements RemindService {
     private Map<String, Boolean> subscriptionDefaultSetting;
 
     @Autowired
-    RemindServiceImpl(
+    NoticeRemindServiceImpl(
             NotifySubscriptionConfigMapper notifySubscriptionConfigMapper,
             NotifySubscriptionMapper notifySubscriptionMapper,
             NotifyRemindMapper notifyRemindMapper,

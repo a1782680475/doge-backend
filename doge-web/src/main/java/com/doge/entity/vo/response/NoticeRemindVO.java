@@ -7,14 +7,14 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * 提醒VO
+ * 消息-提醒VO
  *
  * @author shixinyu
  * @date 2021-10-14 11:43
  */
 @Data
 @ApiModel
-public class RemindVO {
+public class NoticeRemindVO {
     @ApiModelProperty(value="id",position = 1)
     private Integer id;
     @ApiModelProperty(value="目标类型",position = 2)

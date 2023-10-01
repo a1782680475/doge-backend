@@ -7,7 +7,7 @@ import com.doge.dao.queryentity.NotifyMessageBO;
 import com.doge.service.entity.AntPageDTO;
 import com.doge.service.entity.NotifyMessageDTO;
 import com.doge.service.entity.PageDTO;
-import com.doge.service.MessageService;
+import com.doge.service.NoticeMessageService;
 import com.doge.service.entity.UnreadNoticeQueryDTO;
 import com.doge.utils.BeanUtils;
 import lombok.NoArgsConstructor;
@@ -24,10 +24,10 @@ import java.util.List;
  */
 @Service
 @NoArgsConstructor
-public class MessageServiceImpl implements MessageService {
+public class NoticeMessageServiceImpl implements NoticeMessageService {
     private NotifyUserMessageMapper notifyUserMessageMapper;
     @Autowired
-    MessageServiceImpl(NotifyUserMessageMapper notifyUserMessageMapper){
+    NoticeMessageServiceImpl(NotifyUserMessageMapper notifyUserMessageMapper){
         this.notifyUserMessageMapper = notifyUserMessageMapper;
     }
     @Override

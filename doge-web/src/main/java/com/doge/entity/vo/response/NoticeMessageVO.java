@@ -14,7 +14,7 @@ import java.util.Date;
  */
 @Data
 @ApiModel
-public class MessageVO {
+public class NoticeMessageVO {
     @ApiModelProperty(value="id",position = 1)
     private Integer id;
     @ApiModelProperty(value="发送者id",position = 2)
